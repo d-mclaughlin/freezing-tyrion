@@ -14,15 +14,15 @@
 
 #include <stdio.h>
 
-// Define a uniform grid on top of problem area
-static int grid_x = 4;
-static int grid_y = 4;
-
-// Use these to reference elements in the matrix
-int matrix_x = grid_x * grid_x;
-int matrix_y = grid_y * grid_y;
-
 int main() {
+	// Define a uniform grid on top of problem area
+	int grid_x = 4;
+	int grid_y = 4;
+
+	// Use these to reference elements in the matrix
+	int matrix_x = grid_x * grid_x;
+	int matrix_y = grid_y * grid_y;
+
 	// NOTE(david): This 'matrix' is actually 1 dimensional;
 	// 	Index a point by saying matrix[row * matrix_x + column]
 	//	It might look silly but trust me it makes everything easier
@@ -72,7 +72,6 @@ int main() {
 			// It's on the inside
 			// And the matrix has a -4 on the diagonal, and 1s at the places corresponding to its
 			// neighbours
-
 			for (int col=0; col < matrix_y; col++) {
 				if (col == i) {
 					// The entry on the diagonal

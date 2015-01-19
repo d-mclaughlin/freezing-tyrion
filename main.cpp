@@ -54,7 +54,6 @@ int main() {
 			// Then it's a von Neumann boundary
 			// And the matrix has a 1 on the diagonal, and a -1 at the place corresponding to its
 			// internal neighbour
-
 			for (int col=0; col < matrix_x; col++) {
 				if (col == i) {
 					matrix[i * matrix_x + col] = 1;
@@ -90,7 +89,10 @@ int main() {
 	}
 
 	// Fill a vector with information about the boundary conditions
-	// ???(david): What information?
+	// 'Information' is non-zero potentials or non-zero charge densities
+	// So if a point on our grid is in such an area, it has a 1, else it's 0
+
+	// TODO(david): Work out if our grid points lie in these places, and fill b accordingly 
 
 	// Invert the the big matrix
 	// NOTE(david): We've already done this
@@ -110,6 +112,7 @@ int main() {
 
 	// All this work for some nice formatting...
 	for (int row = 0; row < matrix_x; row++) {
+		printf("%d:\t", (row+1));
 		for (int col = 0; col < matrix_y; col++) {
 			if (matrix[row * matrix_x + col] >= 0) {
 				printf(" %d", matrix[row * matrix_x + col]);

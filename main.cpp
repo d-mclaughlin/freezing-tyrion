@@ -1,14 +1,14 @@
-/**************************************************************************
+/***************************************************************************
 	Solving Poisson's equation using the finite difference method
 
-	Morag Deans; David McLaughlin; Martynas Skirbutas; Mark Wood
-**************************************************************************/
+	Morag Deans; David McLaughlin; Paul Räcke; Martynas Skirbutas; Mark Wood
+****************************************************************************/
 
 // NOTE(david): I've just been hammering out what needs to happen to fill that one matrix
 //	from http://www.ieeeaps.org/pdfs/fa_numerical_poisson_nagel.pdf .
 //	There's nothing very exciting in here I'm afraid.
 
-// TODO(david): Get this working with a more complicated case.
+// TODO(david): Get this working with a more complicated case, ie fill b with useful stuff
 
 // WARNING(david): Lots of maths; not for the faint of heart
 
@@ -38,6 +38,9 @@ int main(int argc, char *argv[]) {
 
 	// Find which points lie on the edges, and which are Dirichlet boundaries and 
 	// which are von Neumann boundaries.
+
+	// NOTE(david): I'm not too sure on the definitions of Dirichlet and von Neumann
+	// 	boundaries so tell me if I'm missing something
 	for (int i=0; i < (grid_x * grid_y); i++) {
 		// If it's on the top or bottom
 		if ((i >= 0 && i < grid_x) | (i >= ((grid_x * grid_y) - grid_x))) {

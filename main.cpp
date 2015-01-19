@@ -12,12 +12,15 @@
 
 // WARNING(david): Lots of maths; not for the faint of heart
 
+// printf
 #include <stdio.h>
+// atoi
+#include <cstdlib>
 
-int main() {
+int main(int argc, char *argv[]) {
 	// Define a uniform grid on top of problem area
-	int grid_x = 4;
-	int grid_y = 4;
+	int grid_x = atoi(argv[1]);
+	int grid_y = atoi(argv[2]);
 
 	// Use these to reference elements in the matrix
 	int matrix_x = grid_x * grid_x;
@@ -29,10 +32,8 @@ int main() {
 	int matrix[matrix_x * matrix_y];
 
 	// Initialise every element to 0
-	for (int row=0; row < matrix_x; row++) { 
-		for (int col=0; col < matrix_y; col++) {
-			matrix[row * matrix_x + col] = 0;
-		}
+	for (int element=0; element < (matrix_x * matrix_y); element++) { 
+			matrix[element] = 0;
 	}
 
 	// Find which points lie on the edges, and which are Dirichlet boundaries and 

@@ -8,9 +8,7 @@
 //	from http://www.ieeeaps.org/pdfs/fa_numerical_poisson_nagel.pdf .
 //	There's nothing very exciting in here I'm afraid.
 
-// TODO(david): This only works with a simple two plates with nothing in between.
-//	So we need to get this working with a more arbitrary case. Case A will be a good
-//	place to start, since it's so simple.
+// TODO(david): Get this working with a more complicated case.
 
 // WARNING(david): Lots of maths; not for the faint of heart
 
@@ -52,7 +50,6 @@ int main() {
 		}
 
 		// If it's at the left or right edges
-		// doesn't catch 4 and 11
 		else if ((i % grid_x == 0) | ((i+1) % grid_x == 0)) {
 			// Then it's a von Neumann boundary
 			// And the matrix has a 1 on the diagonal, and a -1 at the place corresponding to its
@@ -62,7 +59,6 @@ int main() {
 				if (col == i) {
 					matrix[i * matrix_x + col] = 1;
 
-					// Work out where its neighbour is and make the entry -1
 					if (i % grid_x == 0) {
 						matrix[i * matrix_x + col + 1] = -1;
 					} else if ((i+1) % grid_x == 0) {

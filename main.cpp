@@ -13,54 +13,63 @@
 
 #include <stdio.h>
 
-int main() {
-	// Define a uniform grid on top of problem area
-	int grid_spacing = 1;
-	int range_x = 4;
-	int range_y = 4;
+// Define a uniform grid on top of problem area
+static int grid_x = 4;
+static int grid_y = 4;
 
+// Use these to reference elements in the matrix
+int matrix_x = grid_x * grid_x;
+int matrix_y = grid_y * grid_y;
+
+// Test function to print a row of the matrix
+static void PrintRow(int array[], int row) {
+	printf("Row %d: ", row);
+	for (int col = 0; col < matrix_y; col++) {
+		printf("%d ", array[row * matrix_x + col]);
+	}
+	printf("\n");
+}
+
+int main() {
 	// NOTE(david): This 'matrix' is actually 1 dimensional;
-	// 	Index a point by saying matrix[row * range_x + column]
-	int matrix[(range_x * range_y) * (range_x * range_y)];
+	// 	Index a point by saying matrix[row * matrix_x + column]
+	int matrix[16 * 16] = {0};
 
 	// Find which points lie on the edges, and which are Dirichlet boundaries and 
 	// which are von Neumann boundaries.
-	for (int i=0; i < (range_x * range_y); i++) {
+	for (int i=0; i < (grid_x * grid_y); i++) {
 		// If it's on the top or bottom
-		if ((i >= 0 && i < range_x) | 
-			(i <= (range_x * range_y) && i > ((range_x * range_y) - range_x))) {
+		// NOTE(david): The second condition here doesn't work
+		if ((i >= 0 && i < grid_x) | (i >= ((grid_x * grid_y) - grid_x))) {
 			// Then it's a Dirichlet boundary
 			// And the matrix has just a 1 on the diagonal
-			
-			// NOTE(david): There is probably a better way of doing this
-			for (int row=0; row < range_x; row++) {
-				for (int col=0; col < range_y; col++) {
-					if (row == col) {
-						matrix[row * range_x + col] = 1;
-					}
+			for (int col=0; col < grid_x; col++) {
+				if (col == i) {
+						matrix[i * matrix_x + col] = 1;
+						PrintRow(matrix, i);
 				}
 			}
 		}
 
 		// If it's at the left or right edges
-		else if ((i % 4 == 0 || (i+1) % 4 == 0) && (i < ((range_x * range_y) - range_x))) {
+		else if ((i % grid_x == 0) | ((i+1) % grid_x == 0)) {
 			// Then it's a von Neumann boundary
 			// And the matrix has a 1 on the diagonal, and a -1 at the place corresponding to its
 			// internal neighbour
 
-			// Work out where its neighbour is and make the entry -1
-			if (i % 4 == 0) {
-				matrix[i + 1] = -1;
-			} else if ((i+1) % 4 == 0) {
-				matrix[i - 1] = -1;
-			}
-
 			// Find the diagonal
-			for (int row=0; row < range_x; row++) {
-				for (int col=0; col < range_y; col++) {
+			for (int row=0; row < grid_x; row++) {
+				for (int col=0; col < grid_y; col++) {
 					if (row == col) {
 						// The entry on the diagonal
-						matrix[row * range_x + col] = 1;
+						matrix[row * grid_x + col] = 1;
+
+						// Work out where its neighbour is and make the entry -1
+						if (i % grid_x == 0) {
+							matrix[row * grid_x + col + 1] = -1;
+						} else if ((i+1) % grid_x == 0) {
+							matrix[row * grid_x + col - 1] = -1;
+						}
 					}
 				}
 			}
@@ -72,19 +81,19 @@ int main() {
 			// neighbours
 
 			// TODO(david): There is probably a better way of doing this
-			for (int row=0; row < range_x; row++) {
-				for (int col=0; col < range_y; col++) {
+			for (int row=0; row < grid_x; row++) {
+				for (int col=0; col < grid_y; col++) {
 					if (row == col) {
 						// The entry on the diagonal
-						matrix[row * range_x + col] = -4;
+						matrix[row * grid_x + col] = -4;
 
 						// The two next to it on the same row
-						matrix[row * range_x + col + 1] = 1;
-						matrix[row * range_x + col - 1] = 1;
+						matrix[row * grid_x + col + 1] = 1;
+						matrix[row * grid_x + col - 1] = 1;
 						
 						// The two above and below it
-						matrix[(row * range_x + col) + range_x] = 1;
-						matrix[(row * range_x + col) - range_x] = 1;
+						matrix[(row * grid_x + col) + grid_x] = 1;
+						matrix[(row * grid_x + col) - grid_x] = 1;
 					}
 				}
 			}
@@ -109,13 +118,9 @@ int main() {
 	// magnitude and direction, then output that data into a file that some plotting program can
 	// interpret and make a nice graphic with arrows and stuff.
 
-	for (int row = 0; row < (range_x * range_x); row++) {
-		for (int col = 0; col < (range_y * range_y); col++) {
-			if ((matrix[row * range_x + col] > 1) |
-					((matrix[row * range_x + col] < -4))) {
-				matrix[row * range_x + col] = 0;
-			}
-			printf("%d ", matrix[row * range_x + col]);
+	for (int row = 0; row < (grid_x * grid_x); row++) {
+		for (int col = 0; col < (grid_y * grid_y); col++) {
+			printf("%d ", matrix[row * (grid_x * grid_x) + col]);
 		}
 		printf("\n");
 	}

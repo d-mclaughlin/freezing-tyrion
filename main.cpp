@@ -11,7 +11,7 @@
 /************************************************************************************************************************************************
 																REFERENCES
 	Finite-differnce method http://www.ieeeaps.org/pdfs/fa_numerical_poisson_nagel.pdf
-	More on Successive Over-Relaxation http://www.maa.org/publications/periodicals/loci/joma/iterative-methods-for-solving-iaxi-ibi-the-sor-method
+	Successive Over-Relaxation http://www.maa.org/publications/periodicals/loci/joma/iterative-methods-for-solving-iaxi-ibi-the-sor-method
 	
 *************************************************************************************************************************************************/
 
@@ -27,6 +27,13 @@
 #include <vector>
 // sqrt, cos
 #include <math.h>
+
+void PrintVector(std::vector<float> vector, int size) {
+	for (int col = 0; col < size; col++) {
+		printf("%f ", vector[col]);
+	}
+	printf("\n");
+}
 
 int main(int argc, char *argv[]) {
 	// Define a uniform grid on top of problem area
@@ -47,12 +54,12 @@ int main(int argc, char *argv[]) {
 
 	// NOTE(david): I'm not too sure on the definitions of Dirichlet and von Neumann
 	// 	boundaries so tell me if I'm missing something
-	for (int i=0; i < (grid_x * grid_y); i++) {
+	for (int i = 0; i < (grid_x * grid_y); i++) {
 		// If it's on the top or bottom
 		if ((i >= 0 && i < grid_x) | (i >= ((grid_x * grid_y) - grid_x))) {
 			// Then it's a Dirichlet boundary
 			// And the matrix has just a 1 on the diagonal
-			for (int col=0; col < matrix_x; col++) {
+			for (int col = 0; col < matrix_x; col++) {
 				if (col == i) {
 					matrix[i * matrix_x + col] = 1;
 				}
@@ -64,7 +71,7 @@ int main(int argc, char *argv[]) {
 			// Then it's a von Neumann boundary
 			// And the matrix has a 1 on the diagonal, and a -1 at the place corresponding to its
 			// internal neighbour
-			for (int col=0; col < matrix_x; col++) {
+			for (int col = 0; col < matrix_x; col++) {
 				if (col == i) {
 					matrix[i * matrix_x + col] = 1;
 
@@ -81,7 +88,7 @@ int main(int argc, char *argv[]) {
 			// It's on the inside
 			// And the matrix has a -4 on the diagonal, and 1s at the places corresponding to its
 			// neighbours
-			for (int col=0; col < matrix_y; col++) {
+			for (int col = 0; col < matrix_y; col++) {
 				if (col == i) {
 					// The entry on the diagonal
 					matrix[i * matrix_x + col] = -4;
@@ -106,43 +113,47 @@ int main(int argc, char *argv[]) {
 	std::vector<int> boundaries = std::vector<int> (matrix_x, 1);
 
 	// Solve Ax = b
-	{
-		// Find omega
-		float t = cos(M_PI / grid_x) + cos(M_PI / grid_y);
-		float omega = ((8 - sqrt(64 - (t*t))) / (t*t));
+	// Find omega
+	float t = cos(M_PI / grid_x) + cos(M_PI / grid_y);
+	float omega = ((8 - sqrt(64 - (t*t))) / (t*t));
 
-		// Make initial guess; the zero vector
-		std::vector<int> x_old = std::vector<int> (matrix_x, 0);
-		std::vector<int> x_new = std::vector<int> (matrix_x, 0);
+	// Make initial guess; the zero vector
+	std::vector<float> x_old = std::vector<float> (matrix_x, 0);
+	std::vector<float> x = std::vector<float> (matrix_x, 0);
 
-		int stop_condition = false;
-		while (!stop_condition) {
-			for (int element=0; element < matrix_x; element++) {
-				int diagonal = matrix[element * matrix_x + element];
-				
-				int first_sum = 0;
-				for (int col=0; col < matrix_y; col++) {
-					first_sum += matrix[element * matrix_x + col] * x_new[col];
-				}
-				int second_sum = 0;
-				for (int col=0; col < matrix_y; col++) {
-					second_sum += matrix[element * matrix_x + col] * x_old[col];
-				}
-
-				x_new[element] = x_old[element] + (omega / diagonal) * 
-					(boundaries[element] - first_sum - second_sum);
+	int stop_condition = false;
+	while (!stop_condition) {
+		for (int i = 0; i < matrix_x; i++) {
+			int diagonal = matrix[i * matrix_x + i];
+			
+			int first_sum = 0;
+			for (int j = 0; j < (i-1); j++) {
+				first_sum += matrix[i * matrix_x + j] * x[j];
 			}
-			// Check if the new one is sufficiently close to the old one
-			// If so, stop.
-			for (int element=0; element < matrix_x; element++){ 
-				if (x_new[element] - x_old[element] < 10*10*10) {
-					stop_condition = true;
-				}
+			int second_sum = 0;
+			for (int j = i; j < matrix_y; j++) {
+				second_sum += matrix[i * matrix_x + j] * x_old[j];
+			}
+
+			x[i] = x_old[i] + (omega / diagonal) * 
+				(boundaries[i] - first_sum - second_sum);
+		}
+		// Check if the new one is sufficiently close to the old one
+		// If so, stop.
+		for (int element = 0; element < matrix_x; element++){ 
+			if (x[element] - x_old[element] < 0.05 &&
+				 (count < matrix_x)) {
+				stop_condition = true;
 			}
 		}
+		x_old = x;
+		printf("hello: ");
+		PrintVector(x_old, matrix_x);
 	}
 
-	// x_new is now a vector of the potentials at each point on the grid
+	// x is now a vector of the potentials at each point on the grid
+	printf("X: ");
+	PrintVector(x, matrix_x);
 
 	// Then the electric field is the vector field E = -grad(potential)
 

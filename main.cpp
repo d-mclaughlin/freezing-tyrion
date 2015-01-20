@@ -15,9 +15,6 @@
 	
 *************************************************************************************************************************************************/
 
-
-// TODO(david): Get this working with a more complicated case, ie fill b with useful stuff
-
 // WARNING(david): Lots of maths; not for the faint of heart
 
 // printf
@@ -47,7 +44,7 @@ int main(int argc, char *argv[]) {
 	// NOTE(david): This 'matrix' is actually 1 dimensional;
 	// 	Index a point by saying matrix[row * matrix_x + column]
 	//	It might look silly but trust me it makes everything easier
-	std::vector<int> matrix = std::vector<int> (matrix_x * matrix_y, 0);
+	std::vector<int> matrix (matrix_x * matrix_y, 0);
 
 	// Find which points lie on the edges, and which are Dirichlet boundaries and 
 	// which are von Neumann boundaries.
@@ -110,7 +107,13 @@ int main(int argc, char *argv[]) {
 	// So if a point on our grid is in such an area, it has a non-zero value, else it's 0
 
 	// TODO(david): Work out if our grid points lie in these places, and fill b accordingly 
-	std::vector<int> boundaries = std::vector<int> (matrix_x, 1);
+	
+	// TODO(david): Get this working with a more complicated case, ie fill b with useful stuff
+	
+	// NOTE(david): This is just a dumb test case, with two parallel plates,
+	//	the top one is at +1V and the bottom one is at -1V, and there's nothing inbetween
+	int b[] = {1,1,1,1,0,0,0,0,0,0,0,0,-1,-1,-1,-1};
+	std::vector<float> boundaries (b, b + matrix_x);
 
 	// Solve Ax = b
 	// Find omega
@@ -118,8 +121,8 @@ int main(int argc, char *argv[]) {
 	float omega = ((8 - sqrt(64 - (t*t))) / (t*t));
 
 	// Make initial guess; the zero vector
-	std::vector<float> x_old = std::vector<float> (matrix_x, 0);
-	std::vector<float> x = std::vector<float> (matrix_x, 0);
+	std::vector<float> x_old (matrix_x, 0);
+	std::vector<float> x (matrix_x, 0);
 
 	int stop_condition = false;
 	while (!stop_condition) {
@@ -141,8 +144,7 @@ int main(int argc, char *argv[]) {
 		// Check if the new one is sufficiently close to the old one
 		// If so, stop.
 		for (int element = 0; element < matrix_x; element++){ 
-			if (x[element] - x_old[element] < 0.05 &&
-				 (count < matrix_x)) {
+			if (x[element] - x_old[element] < 0.05) {
 				stop_condition = true;
 			}
 		}

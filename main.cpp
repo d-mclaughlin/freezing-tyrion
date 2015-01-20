@@ -106,7 +106,9 @@ int main(int argc, char *argv[]) {
 	// 'Information' is non-zero potentials or non-zero charge densities
 	// So if a point on our grid is in such an area, it has a non-zero value, else it's 0
 
-	// TODO(david): Work out if our grid points lie in these places, and fill b accordingly 
+	// TODO(david): Work out if our grid points lie in these places, and fill b accordingly
+	//	we know the center and radius of the circle, and if we know the grid spacing then we
+	//	know which points are inside the circle.
 	
 	// TODO(david): Get this working with a more complicated case, ie fill b with useful stuff
 	
@@ -141,7 +143,7 @@ int main(int argc, char *argv[]) {
 			x[i] = x_old[i] + (omega / diagonal) * 
 				(boundaries[i] - first_sum - second_sum);
 		}
-		// Check if the new one is sufficiently close to the old one
+		// Check if every element of new one is sufficiently close to the old one
 		// If so, stop.
 		for (int element = 0; element < matrix_x; element++){ 
 			if (x[element] - x_old[element] < 0.05) {
@@ -149,8 +151,6 @@ int main(int argc, char *argv[]) {
 			}
 		}
 		x_old = x;
-		printf("hello: ");
-		PrintVector(x_old, matrix_x);
 	}
 
 	// x is now a vector of the potentials at each point on the grid

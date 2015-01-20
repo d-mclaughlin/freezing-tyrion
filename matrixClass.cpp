@@ -1,16 +1,16 @@
 //Main aim of class is to generate and store the matrix containing the relationships between sample points.
 
-#include<vector>
-#include<iostream>
+#include <vector>
+#include <iostream>
 
 class Matrix{
 
 //Information held by class
 
 private:
-//Number of sample points desired in x and y directions.
+    //Number of sample points desired in x and y directions.
     int xNumber,yNumber;
-//Placeholder. Our final matrix a.
+    //Placeholder. Our final matrix a.
     std::vector<std::vector<int> > a;
 
 //Used to input boundary conditions.
@@ -108,25 +108,29 @@ Matrix::Matrix (int xNum,int yNum){
 }
 
 
-//CHANGE TO USE INPUT BOUNDARY CONDITIONS
+//TODO(mark): CHANGE TO USE INPUT BOUNDARY CONDITIONS
 int Matrix::isBoundary(int xCount,int yCount){
-//Describes grid where top and bottom are Dirichlett boundaries and sides are Von Neumann boundaries
-if(yCount==1||yCount==yNumber){return 1;}
-else if(xCount==1||xCount==xNumber){return 2;}
-else{return 0;}
+    //Describes grid where top and bottom are Dirichlett boundaries and sides are Von Neumann boundaries
+    if (yCount == 1 || yCount == yNumber){
+        return 1;
+    } else if (xCount == 1 || xCount == xNumber) {
+        return 2;
+    } else{
+        return 0;
+    }
 }
 
 
 //Test function. Outputs contents of given vector to the console
 void Matrix::viewVector(){
 
-  for(int row=0;row<a.size();row++){
-    std::cout<<"Row "<<row+1<<"  ";
-    for(int column=0;column<a.size();column++){
-      std::cout<<a[row][column]<<"  ";
-}
-    std::cout<<std::endl;
-}
+    for(int row=0;row<a.size();row++){
+        std::cout<<"Row "<<row+1<<"  ";
+        for(int column=0;column<a.size();column++){
+            std::cout<<a[row][column]<<"  ";
+        }
+        std::cout<<std::endl;
+    }
 }
 
 
@@ -134,8 +138,27 @@ void Matrix::viewVector(){
 
 //Test code
 
-int main(){
-Matrix test = Matrix(50,50);
-test.viewVector();
+int main(int argc, char *argv[]){
+    xNumber = atoi(argv[1]);
+    yNumber = atoi(argv[2]);
+    Matrix test = Matrix(xNumber, yNumber);
+    std::vector<int> boundaries = std::vector<int> (xNumber * yNumber);
 
+    for (int row=0; row < xNumber; row++) {
+        for (int col=0; col < yNumber; col++) {
+            // Initialise this element of product to 0
+            product[xNumber][yNumber] = 0;            
+            // Multiply the row of A by the column of B
+            for (int inner=0; inner < yNumber; inner++) {
+                product[row][col] += matrixA[row][inner] *
+                                             matrixB[inner][col];
+            }
+        }
+    }
+    test.viewVector();
+    boundaries.viewVector();
+
+    for (int element=0; element < (xNumber * yNumber); element++) {
+        std::cout << boundaries[element] << "\n";
+    }
 }

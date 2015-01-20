@@ -8,6 +8,14 @@
 //	from http://www.ieeeaps.org/pdfs/fa_numerical_poisson_nagel.pdf .
 //	There's nothing very exciting in here I'm afraid.
 
+/************************************************************************************************************************************************
+																REFERENCES
+	Finite-differnce method http://www.ieeeaps.org/pdfs/fa_numerical_poisson_nagel.pdf
+	More on Successive Over-Relaxation http://www.maa.org/publications/periodicals/loci/joma/iterative-methods-for-solving-iaxi-ibi-the-sor-method
+	
+*************************************************************************************************************************************************/
+
+
 // TODO(david): Get this working with a more complicated case, ie fill b with useful stuff
 
 // WARNING(david): Lots of maths; not for the faint of heart
@@ -16,6 +24,9 @@
 #include <stdio.h>
 // atoi
 #include <cstdlib>
+#include <vector>
+// sqrt, cos
+#include <math.h>
 
 int main(int argc, char *argv[]) {
 	// Define a uniform grid on top of problem area
@@ -29,12 +40,7 @@ int main(int argc, char *argv[]) {
 	// NOTE(david): This 'matrix' is actually 1 dimensional;
 	// 	Index a point by saying matrix[row * matrix_x + column]
 	//	It might look silly but trust me it makes everything easier
-	int matrix[matrix_x * matrix_y];
-
-	// Initialise every element to 0
-	for (int element=0; element < (matrix_x * matrix_y); element++) { 
-			matrix[element] = 0;
-	}
+	std::vector<int> matrix = std::vector<int> (matrix_x * matrix_y, 0);
 
 	// Find which points lie on the edges, and which are Dirichlet boundaries and 
 	// which are von Neumann boundaries.
@@ -94,19 +100,49 @@ int main(int argc, char *argv[]) {
 
 	// Fill a vector with information about the boundary conditions
 	// 'Information' is non-zero potentials or non-zero charge densities
-	// So if a point on our grid is in such an area, it has a 1, else it's 0
+	// So if a point on our grid is in such an area, it has a non-zero value, else it's 0
 
 	// TODO(david): Work out if our grid points lie in these places, and fill b accordingly 
+	std::vector<int> boundaries = std::vector<int> (matrix_x, 1);
 
-	// Invert the the big matrix
-	// NOTE(david): We've already done this
-	// NOTE(david): What if we start getting 100x100 matrices? This will be very slow. Do we care?
-	// yes: there's another method in the link at the top
+	// Solve Ax = b
+	{
+		// Find omega
+		float t = cos(M_PI / grid_x) + cos(M_PI / grid_y);
+		float omega = ((8 - sqrt(64 - (t*t))) / (t*t));
 
-	// Right multiply the inverted matrix by the boundary conditions vector
-	// NOTE(david): We've already done this too
+		// Make initial guess; the zero vector
+		std::vector<int> x_old = std::vector<int> (matrix_x, 0);
+		std::vector<int> x_new = std::vector<int> (matrix_x, 0);
 
-	// Then we get a vector of the potentials at each point on the grid
+		int stop_condition = false;
+		while (!stop_condition) {
+			for (int element=0; element < matrix_x; element++) {
+				int diagonal = matrix[element * matrix_x + element];
+				
+				int first_sum = 0;
+				for (int col=0; col < matrix_y; col++) {
+					first_sum += matrix[element * matrix_x + col] * x_new[col];
+				}
+				int second_sum = 0;
+				for (int col=0; col < matrix_y; col++) {
+					second_sum += matrix[element * matrix_x + col] * x_old[col];
+				}
+
+				x_new[element] = x_old[element] + (omega / diagonal) * 
+					(boundaries[element] - first_sum - second_sum);
+			}
+			// Check if the new one is sufficiently close to the old one
+			// If so, stop.
+			for (int element=0; element < matrix_x; element++){ 
+				if (x_new[element] - x_old[element] < 10*10*10) {
+					stop_condition = true;
+				}
+			}
+		}
+	}
+
+	// x_new is now a vector of the potentials at each point on the grid
 
 	// Then the electric field is the vector field E = -grad(potential)
 

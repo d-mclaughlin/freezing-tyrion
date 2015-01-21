@@ -1,7 +1,7 @@
 /***************************************************************************
 	Solving Poisson's equation using the finite difference method
 
-	Morag Deans; David McLaughlin; Paul Räcke; Martynas Skirbutas; Mark Wood
+	Morag Deans; David McLaughlin; Martynas Skirbutas; Mark Wood
 ****************************************************************************/
 
 // NOTE(david): I've just been hammering out what needs to happen to fill that one matrix
@@ -126,8 +126,8 @@ int main(int argc, char *argv[]) {
 	std::vector<float> x_old (matrix_x, 0);
 	std::vector<float> x (matrix_x, 0);
 
-	int stop_condition = false;
-	while (!stop_condition) {
+	int still_guessing = true;
+	while (still_guessing) {
 		for (int i = 0; i < matrix_x; i++) {
 			int diagonal = matrix[i * matrix_x + i];
 			
@@ -143,11 +143,12 @@ int main(int argc, char *argv[]) {
 			x[i] = x_old[i] + (omega / diagonal) * 
 				(boundaries[i] - first_sum - second_sum);
 		}
-		// Check if every element of new one is sufficiently close to the old one
-		// If so, stop.
+		// Check if one element of the new guess is too far away from the answer
+		// If so, keep going.
+		// NOTE(david): I /think/ this is right...
 		for (int element = 0; element < matrix_x; element++){ 
-			if (x[element] - x_old[element] < 0.05) {
-				stop_condition = true;
+			if (abs(x[element]) - abs(x_old[element]) > 0.01) {
+				still_guessing = false;
 			}
 		}
 		x_old = x;

@@ -35,14 +35,15 @@ int main(void) {
     // Initial conditions for a capacitor
     v[0][col] = top_plate;
     v[grid_rows - 1][col] = bottom_plate;
-
+/*
     v_new[0][col] = top_plate;
     v_new[grid_rows - 1][col] = bottom_plate;
+*/
   }
 
 /*********************************************************************
     David's code
-**********************************************************************/
+**********************************************************************
   float residuals[grid_rows][grid_cols] = {};
   float err_bound = pow(10, -6);
   
@@ -117,13 +118,14 @@ int main(void) {
           break;
         }
       }
-    }*/
+    }
     count++;
   }    
-    
+*/
+   
 /*********************************************************************
-    Laurinas' code
-*********************************************************************   
+    Laurynas' code
+**********************************************************************/  
     for (int row = 1; row < (grid_rows - 1); row++) {
       for (int col = 1; col < (grid_cols - 1); col++) {
         v[row][col] = (1/4.0f) * (v[row-1][col] + v[row+1][col] + 
@@ -132,19 +134,19 @@ int main(void) {
     }
 
     // TODO(david): Calculate omega from the spacing of the grid?
-    float omega = 1.6f;
+    float t = cos(M_PI / grid_rows) + cos(M_PI / grid_cols);
+    float relaxation = (8 - sqrt(64 - 16 * t * t)) / (t * t);
     
     float err_bound = pow(10, -6);
     
     for (int iter = 0; iter < max_iterate; iter++) {
       for (int row = 1; row < (grid_rows - 1); row++) {
         for (int col = 1; col < (grid_cols - 1); col++) {
-	        v[row][col] = (1 - omega) * v[row][col] + (omega / 4) * 
+	        v[row][col] = (1 - relaxation) * v[row][col] + (relaxation / 4) * 
 	          (v[row-1][col] + v[row+1][col] + v[row][col-1] + v[row][col+1]);
         }
       }
     }
-**********************************************************************/
 
   ofstream output ("potential.dat");
 

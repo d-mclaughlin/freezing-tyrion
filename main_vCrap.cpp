@@ -86,8 +86,8 @@ int main(void) {
     }
  
     //Outputing voltage grid
-    for(int row=0;row<grid_rows;row++){
-      for(int col=0;col<grid_cols;col++){
+    for(int row = 0; row < grid_rows; row++){
+      for(int col = 0; col < grid_cols; col++){
 	      std::cout << v[row][col] << "  ";
       }
       std::cout<<"\n";

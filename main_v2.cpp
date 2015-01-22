@@ -17,7 +17,12 @@ int main(void) {
   const int grid_spacing = 1;
 
   // Initialise the grid to 0
+  
+  // NOTE(david): These are 1D arrays pretending to be 2D arrays.
+  //  Indexing them is a nightmare but trust me, everything else is easier.
+  //  Index an element by saying v[row * grid_cols + col];
   float v[grid_rows][grid_cols] = {};
+  float v_new[grid_rows][grid_cols] = {};
 
   // Boundary conditions
   // NOTE(david): I've swapped these around so the plates are on the top
@@ -29,10 +34,8 @@ int main(void) {
   for (int col = 0; col < grid_cols; col++) {
     // Initial conditions for a capacitor
     v[0][col] = top_plate;
-    v[grid_rows - 1][col] = bottom_plate;
+    v[grid_rows - 1][grid_cols] = bottom_plate;
   }
-  
-// Here's the million dollar question: Who is right? Laurinas or David? Or both?
 
 /*********************************************************************
     David's code
@@ -47,28 +50,40 @@ int main(void) {
   // The hardest part in the whole program, I imagine, will be filling this.
   float density[grid_rows][grid_cols] = {};
   
-  int stop_condition = false;
-  while (!stop_condition) {
+  //int stop_condition = false;
+  float max_iterate = 500;
+  int count = 0;
+  while (count < max_iterate) {
     
     // Take the residual of each point in the grid
     // And find the voltage at that point using the residual
-    for (int row = 0; row < grid_rows; row++) {
+    for (int row = 1; row < (grid_rows - 1); row++) {
       for (int col = 0; col < grid_cols; col++) {
-        printf("%f\n", residuals[row][col]);
+        //printf("%f\n", residuals[row][col]);
         
         // NOTE(david): There HAS to be a better way than this...........
-        printf("%f\n", v[row-1][col]);
-
-        residuals[row][col] = 
-          v[row-1][col] + v[row+1][col] + v[row][col-1] + v[row][col+1] - 
-          4 * v[row][col] + (density[row][col] * grid_spacing * grid_spacing / 
-          (8.85 * pow(10,-12)));
+        if (col == 0) {
+          residuals[row][col] = 
+            -1 * v[row][col+1] + v[row][col] + (density[row][col] * grid_spacing * grid_spacing / 
+            (8.85f * pow(10,-12)));
+        } else if (col == grid_cols) {
+          residuals[row][col] = 
+            -1 * v[row][col-1] + v[row][col] + (density[row][col] * grid_spacing * grid_spacing / 
+            (8.85f * pow(10,-12)));
+        } else {
+          residuals[row][col] = 
+            v[row-1][col] + v[row+1][col] + v[row][col-1] + v[row][col+1] - 
+            4 * v[row][col] + (density[row][col] * grid_spacing * grid_spacing / 
+            (8.85f * pow(10,-12)));
+        }
         
-        v[row][col] = v[row][col] + relaxation * residuals[row][col];
+        v_new[row][col] = v[row][col] + relaxation * residuals[row][col];
       }
     }
     
-    stop_condition = true;
+    //*v = *v_new;
+    
+    /*stop_condition = true;
     // if any residual > err_bound, keep going
     for (int row = 0; row < grid_rows; row++) {
       for (int col = 0; col < grid_cols; col++) {
@@ -77,8 +92,8 @@ int main(void) {
           break;
         }
       }
-    }
-    //cout << count++ << "\n";
+    }*/
+    count++;
   }    
     
 /*********************************************************************
@@ -93,7 +108,7 @@ int main(void) {
 
     // TODO(david): Calculate omega from the spacing of the grid?
     float omega = 1.6f;
-    float max_iterate = 500; 
+    
     float err_bound = pow(10, -6);
     
     for (int iter = 0; iter < max_iterate; iter++) {
@@ -108,7 +123,7 @@ int main(void) {
 
   ofstream output ("potential.dat");
 
-  for (int row = grid_rows - 1; row >= 0; row++) {
+  for (int row = 0; row < grid_rows; row++) {
     for (int col = 0; col < grid_cols; col++) {
       output << setw(15) << v[row][col];
     }

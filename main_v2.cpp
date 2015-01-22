@@ -10,8 +10,8 @@ using namespace std;
 int main(void) {
   // Define a grid.
   // NOTE(david): Do we want these numbers to be variable?
-  const int grid_rows = 135;
-  const int grid_cols = 230;
+  const int grid_rows = 4;
+  const int grid_cols = 4;
   
   // But then why bother huh
   const int grid_spacing = 1;
@@ -34,7 +34,7 @@ int main(void) {
   for (int col = 0; col < grid_cols; col++) {
     // Initial conditions for a capacitor
     v[0][col] = top_plate;
-    v[grid_rows - 1][grid_cols] = bottom_plate;
+    v[grid_rows - 1][col] = bottom_plate;
   }
 
 /*********************************************************************
@@ -51,14 +51,26 @@ int main(void) {
   float density[grid_rows][grid_cols] = {};
   
   //int stop_condition = false;
-  float max_iterate = 500;
+  float max_iterate = 1;
   int count = 0;
+
+  //Outputing voltage grid
+    for(int row=0;row<grid_rows;row++){
+      for(int col=0;col<grid_cols;col++){
+	std::cout<<v[row][col]<<"  ";
+
+}
+      std::cout<<"\n";
+}
+
+
   while (count < max_iterate) {
     
     // Take the residual of each point in the grid
     // And find the voltage at that point using the residual
     for (int row = 1; row < (grid_rows - 1); row++) {
       for (int col = 0; col < grid_cols; col++) {
+
         //printf("%f\n", residuals[row][col]);
         
         // NOTE(david): There HAS to be a better way than this...........
@@ -80,7 +92,17 @@ int main(void) {
         v_new[row][col] = v[row][col] + relaxation * residuals[row][col];
       }
     }
-    
+ 
+    //Outputing voltage grid
+    for(int row=0;row<grid_rows;row++){
+      for(int col=0;col<grid_cols;col++){
+	std::cout<<v_new[row][col]<<"  ";
+
+}
+      std::cout<<"\n";
+}
+
+
     //*v = *v_new;
     
     /*stop_condition = true;

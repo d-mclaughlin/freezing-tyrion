@@ -60,14 +60,10 @@ int main(void) {
 
 
   while (count < max_iterate) {
-    
     // Take the residual of each point in the grid
     // And find the voltage at that point using the residual
     for (int row = 1; row < (grid_rows - 1); row++) {
-      for (int col = 0; col < grid_cols; col++) {
-
-        //printf("%f\n", residuals[row][col]);
-        
+      for (int col = 0; col < grid_cols; col++) {        
         // NOTE(david): There HAS to be a better way than this...........
         if (col == 0) {
           residuals[row][col] = 
@@ -92,13 +88,10 @@ int main(void) {
     //Outputing voltage grid
     for(int row=0;row<grid_rows;row++){
       for(int col=0;col<grid_cols;col++){
-	std::cout<<v[row][col]<<"  ";
-
-}
+	      std::cout << v[row][col] << "  ";
+      }
       std::cout<<"\n";
-}
-
-    //*v = *v_new;
+    }
     
     /*stop_condition = true;
     // if any residual > err_bound, keep going

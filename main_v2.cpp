@@ -35,6 +35,9 @@ int main(void) {
     // Initial conditions for a capacitor
     v[0][col] = top_plate;
     v[grid_rows - 1][col] = bottom_plate;
+
+    v_new[0][col] = top_plate;
+    v_new[grid_rows - 1][col] = bottom_plate;
   }
 
 /*********************************************************************
@@ -51,7 +54,7 @@ int main(void) {
   float density[grid_rows][grid_cols] = {};
   
   //int stop_condition = false;
-  float max_iterate = 1;
+  float max_iterate = 10;
   int count = 0;
 
   //Outputing voltage grid
@@ -89,19 +92,19 @@ int main(void) {
             (8.85f * pow(10,-12)));
         }
         
-        v_new[row][col] = v[row][col] + relaxation * residuals[row][col];
+       v[row][col]+= relaxation * residuals[row][col];
+
       }
     }
  
     //Outputing voltage grid
     for(int row=0;row<grid_rows;row++){
       for(int col=0;col<grid_cols;col++){
-	std::cout<<v_new[row][col]<<"  ";
+	std::cout<<v[row][col]<<"  ";
 
 }
       std::cout<<"\n";
 }
-
 
     //*v = *v_new;
     

@@ -1,8 +1,8 @@
-/***************************************************************************
+/******************************************************************************
 	Solving Poisson's equation using the finite difference method
 
-	Morag Deans; David McLaughlin; Martynas Skirbutas; Mark Wood
-****************************************************************************/
+	Morag Deans, David McLaughlin, Laurinas Mince, Martynas Skirbutas, Mark Wood
+*******************************************************************************/
 
 // NOTE(david): I've just been hammering out what needs to happen to fill that one matrix
 //	from http://www.ieeeaps.org/pdfs/fa_numerical_poisson_nagel.pdf .
@@ -143,19 +143,14 @@ int main(int argc, char *argv[]) {
 			x[i] = x_old[i] + (omega / diagonal) * 
 				(boundaries[i] - first_sum - second_sum);
 		}
-		// Check if one element of the new guess is too far away from the answer
-		// If so, keep going.
-		// NOTE(david): I /think/ this is right...
-		for (int element = 0; element < matrix_x; element++){ 
-			if (abs(x[element]) - abs(x_old[element]) > 0.01) {
-				still_guessing = false;
-			}
-		}
+		
+		// TODO(david): Check if the old vector is so close to the new one that there's 
+		// no point in continuing.
 		x_old = x;
 	}
 
 	// x is now a vector of the potentials at each point on the grid
-	printf("X: ");
+	printf("X:\n");
 	PrintVector(x, matrix_x);
 
 	// Then the electric field is the vector field E = -grad(potential)

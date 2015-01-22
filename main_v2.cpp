@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <fstream>
+#include <stdio.h>
 
 using namespace std;
 
@@ -31,7 +32,7 @@ int main(void) {
     v[grid_rows - 1][col] = bottom_plate;
   }
   
-// Here the million dollar question: Who is right? Laurinas or David? Or both?
+// Here's the million dollar question: Who is right? Laurinas or David? Or both?
 
 /*********************************************************************
     David's code
@@ -39,24 +40,30 @@ int main(void) {
   float residuals[grid_rows][grid_cols] = {};
   float err_bound = pow(10, -6);
   
-  float t = cos(MPI / grid_x) + cos(M_PI / grid_y);
+  float t = cos(M_PI / grid_rows) + cos(M_PI / grid_cols);
   float relaxation = (8 - sqrt(64 - 16 * t * t)) / (t * t);
     
   // Obviously this will be different depending on the physical system.
-  // The hardest part in the whole program, I imagine, will be filling this
+  // The hardest part in the whole program, I imagine, will be filling this.
   float density[grid_rows][grid_cols] = {};
   
   int stop_condition = false;
   while (!stop_condition) {
+    
     // Take the residual of each point in the grid
     // And find the voltage at that point using the residual
     for (int row = 0; row < grid_rows; row++) {
       for (int col = 0; col < grid_cols; col++) {
+        printf("%f\n", residuals[row][col]);
+        
+        // NOTE(david): There HAS to be a better way than this...........
+        printf("%f\n", v[row-1][col]);
+
         residuals[row][col] = 
           v[row-1][col] + v[row+1][col] + v[row][col-1] + v[row][col+1] - 
           4 * v[row][col] + (density[row][col] * grid_spacing * grid_spacing / 
-          (8.85 * pow(10,-12));
-          
+          (8.85 * pow(10,-12)));
+        
         v[row][col] = v[row][col] + relaxation * residuals[row][col];
       }
     }
@@ -65,9 +72,13 @@ int main(void) {
     // if any residual > err_bound, keep going
     for (int row = 0; row < grid_rows; row++) {
       for (int col = 0; col < grid_cols; col++) {
-        if (residual[row][col] > err_bound) stop_condition = false;
+        if (residuals[row][col] > err_bound)  { 
+          stop_condition = false;
+          break;
+        }
       }
     }
+    //cout << count++ << "\n";
   }    
     
 /*********************************************************************

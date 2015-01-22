@@ -1,2 +1,2 @@
-main.exe: main.cpp
+%.exe: %.cpp
 	g++ -o $@ $^ -Wall

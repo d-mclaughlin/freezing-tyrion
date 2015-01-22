@@ -7,41 +7,61 @@
 using namespace std;
 
 int main(void) {
+  // Define a grid.
+  // NOTE(david): Do we want these numbers to be variable?
+  const int grid_rows = 135;
+  const int grid_cols = 230;
+  
+  // But then why bother huh
+  const int grid_spacing = 1;
 
-  const int Nx = 135;
-  const int Ny = 230;
+  // Initialise the grid to 0
+  float v[grid_rows][grid_cols] = {};
 
-  double V[Nx][Ny] = {0};
+  // Boundary conditions
+  // NOTE(david): I've swapped these around so the plates are on the top
+  //  and bottom instead of at the sides, since that's closer to the
+  //  picture of the problem in the project description
+  float top_plate = 1.0f;
+  float bottom_plate = -1.0f;
 
-  double left_plate = 1.0;
-  double right_plate = -1.0;
-
-  for (int j=0; j<Ny; j++) {
-    V[0][j] = left_plate;
-    V[Nx-1][j] = right_plate;
+  for (int col = 0; col < grid_cols; col++) {
+    // Initial conditions for a capacitor
+    v[0][col] = top_plate;
+    v[grid_rows - 1][col] = bottom_plate;
   }
 
-  for (int j=1; j<(Ny-1); j++) {
-    for (int i=1; i<(Nx-1); i++) {
-      V[i][j] = (1/4.0)*(V[i-1][j] + V[i+1][j] + V[i][j-1] + V[i][j+1]);
+/* This part should be done recursively no? */
+
+  // Each point is the average of the points around it
+  for (int row = 1; row < (grid_rows - 1); row++) {
+    for (int col = 1; col < (grid_cols - 1); col++) {
+      v[row][col] = (1/4.0f) * (v[row-1][col] + v[row+1][col] + 
+                    v[row][col-1] + v[row][col+1]);
     }
   }
 
-  double s = 1.6;
-  double temp, max_iterate = 500, err_bound = pow(10, -6);
-  for (int k=1; k<=max_iterate; k++) {
-    for (int j=1; j<(Ny-1); j++) {
-      for (int i=1; i<(Nx-1); i++) {
-	V[i][j] = (1-s)*V[i][j] + (s/4)*(V[i-1][j] + V[i+1][j] + V[i][j-1] + V[i][j+1]);
+  // TODO(david): Calculate omega from the spacing of the grid?
+  float omega = 1.6f;
+  float max_iterate = 500; 
+  float err_bound = pow(10, -6);
+  
+  for (int iter = 0; iter < max_iterate; iter++) {
+    for (int row = 1; row < (grid_rows - 1); row++) {
+      for (int col = 1; col < (grid_cols - 1); col++) {
+	      v[row][col] = (1 - omega) * v[row][col] + (omega / 4) * 
+	        (v[row-1][col] + v[row+1][col] + v[row][col-1] + v[row][col+1]);
       }
     }
   }
+  
+/* End of possibly recursive part */
 
   ofstream output ("potential.dat");
 
-  for (int j=Ny-1; j>=0; j--) {
-    for (int i=0; i<Nx; i++) {
-      output << setw(15) << V[i][j];
+  for (int row = grid_rows - 1; row >= 0; row++) {
+    for (int col = 0; col < grid_cols; col++) {
+      output << setw(15) << v[row][col];
     }
     output << endl;
   }

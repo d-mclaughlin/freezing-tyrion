@@ -39,6 +39,8 @@ int main(void) {
   float bottom_plate = -1.0f;
 
   // TODO(david): Set this up so that it works for any initial conditions
+  //  Do we want to do this with a scripting language or do we want to
+  //  be able to draw bitmaps? Do we want to get crazy and say both?
   for (int col = 0; col < grid_cols; col++) {
     // Initial conditions for a capacitor
     v[0][col] = top_plate;
@@ -50,6 +52,10 @@ int main(void) {
     for (int col = 1; col < (grid_cols - 1); col++) {
       v[row][col] = (1/4.0f) * (v[row-1][col] + v[row+1][col] + 
                     v[row][col-1] + v[row][col+1]);
+
+      // This misses out the sides of the domain.
+      //  The easiest way of fixing this would be to make special cases
+      //  for the two sides. Maybe there's a better way though?
     }
   }
 
@@ -72,6 +78,10 @@ int main(void) {
 
         v[row][col] = (1 - relaxation) * v[row][col] + (relaxation / 4) * 
           (v[row-1][col] + v[row+1][col] + v[row][col-1] + v[row][col+1]);
+        
+        // This misses out the sides of the domain.
+        //  The easiest way of fixing this would be to make special cases
+        //  for the two sides. Maybe there's a better way though?
       }
     }
   }

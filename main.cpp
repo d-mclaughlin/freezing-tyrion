@@ -6,7 +6,8 @@
 #include <stdio.h>
 
 /******************************************************************************
-  Solving Poisson's equation using the finite difference method
+  Solving Poisson's equation for arbitrary initial conditions 
+  by using the finite difference metho and Successive Over-Relaxation.
 
   Morag Deans, David McLaughlin, Laurynas Mince, Martynas Skirbutas, Mark Wood
 *******************************************************************************/
@@ -85,6 +86,9 @@ int main(void) {
       }
     }
   }
+
+  // We can do all of this without the STL. It might improve compile
+  //  times if they start getting bad.
 
   ofstream output ("potential.dat");
 

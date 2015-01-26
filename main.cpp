@@ -68,6 +68,7 @@ int main(void) {
         // For each point in the grid,
         //  V[i,j] = (1-s)V[i,j] + (s/4)(V[i-1,j] + V[i+1,j] + V[i,j-1] + v[i,j+1])
         // where s is the relaxation constant
+        // Check reference 3, page 49 for more.
 
         v[row][col] = (1 - relaxation) * v[row][col] + (relaxation / 4) * 
           (v[row-1][col] + v[row+1][col] + v[row][col-1] + v[row][col+1]);

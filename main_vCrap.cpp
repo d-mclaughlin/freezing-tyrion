@@ -17,10 +17,6 @@ int main(void) {
   const int grid_spacing = 1;
 
   // Initialise the grid to 0
-  
-  // NOTE(david): These are 1D arrays pretending to be 2D arrays.
-  //  Indexing them is a nightmare but trust me, everything else is easier.
-  //  Index an element by saying v[row * grid_cols + col];
   float v[grid_rows][grid_cols] = {};
   float v_new[grid_rows][grid_cols] = {};
 
@@ -39,10 +35,7 @@ int main(void) {
     v_new[0][col] = top_plate;
     v_new[grid_rows - 1][col] = bottom_plate;
   }
-
-/*********************************************************************
-    David's code
-**********************************************************************/
+  
   float residuals[grid_rows][grid_cols] = {};
   float err_bound = pow(10, -6);
   
@@ -58,24 +51,19 @@ int main(void) {
   int count = 0;
 
   //Outputing voltage grid
-    for(int row=0;row<grid_rows;row++){
-      for(int col=0;col<grid_cols;col++){
-	std::cout<<v[row][col]<<"  ";
-
-}
-      std::cout<<"\n";
-}
+    for(int row = 0; row < grid_rows; row++) {
+      for(int col = 0; col < grid_cols; col++) {
+	      std::cout << v[row][col] << "  ";
+      }
+      std::cout << "\n";
+    }
 
 
   while (count < max_iterate) {
-    
     // Take the residual of each point in the grid
     // And find the voltage at that point using the residual
     for (int row = 1; row < (grid_rows - 1); row++) {
-      for (int col = 0; col < grid_cols; col++) {
-
-        //printf("%f\n", residuals[row][col]);
-        
+      for (int col = 0; col < grid_cols; col++) {        
         // NOTE(david): There HAS to be a better way than this...........
         if (col == 0) {
           residuals[row][col] = 
@@ -98,15 +86,12 @@ int main(void) {
     }
  
     //Outputing voltage grid
-    for(int row=0;row<grid_rows;row++){
-      for(int col=0;col<grid_cols;col++){
-	std::cout<<v[row][col]<<"  ";
-
-}
+    for(int row = 0; row < grid_rows; row++){
+      for(int col = 0; col < grid_cols; col++){
+	      std::cout << v[row][col] << "  ";
+      }
       std::cout<<"\n";
-}
-
-    //*v = *v_new;
+    }
     
     /*stop_condition = true;
     // if any residual > err_bound, keep going
@@ -120,31 +105,6 @@ int main(void) {
     }*/
     count++;
   }    
-    
-/*********************************************************************
-    Laurinas' code
-*********************************************************************   
-    for (int row = 1; row < (grid_rows - 1); row++) {
-      for (int col = 1; col < (grid_cols - 1); col++) {
-        v[row][col] = (1/4.0f) * (v[row-1][col] + v[row+1][col] + 
-                      v[row][col-1] + v[row][col+1]);
-      }
-    }
-
-    // TODO(david): Calculate omega from the spacing of the grid?
-    float omega = 1.6f;
-    
-    float err_bound = pow(10, -6);
-    
-    for (int iter = 0; iter < max_iterate; iter++) {
-      for (int row = 1; row < (grid_rows - 1); row++) {
-        for (int col = 1; col < (grid_cols - 1); col++) {
-	        v[row][col] = (1 - omega) * v[row][col] + (omega / 4) * 
-	          (v[row-1][col] + v[row+1][col] + v[row][col-1] + v[row][col+1]);
-        }
-      }
-    }
-**********************************************************************/
 
   ofstream output ("potential.dat");
 

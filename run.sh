@@ -18,7 +18,7 @@ g++ -o main_1D.exe main_1D.cpp parser.cpp find_electric_field.cpp -std=c++0x
 
 gnuplot << EOF
   set term postscript
-  set output "plot.eps"
+  set output "potential.eps"
 
   set pm3d map
   set size square
@@ -35,6 +35,11 @@ gnuplot << EOF
        0.75 1 0 0, 1 1 1 1 )
 
   splot "potential.dat" matrix
+
+  ################################
+  set output "electricfield.eps"
+  set style arrow 1
+  plot "electricfield.dat" using 1:2:3:4 with vectors lt 1 
 EOF
 
-gv plot.eps
+gv potential.eps electricfield.eps

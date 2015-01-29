@@ -72,10 +72,10 @@ int main(void) {
 
 
   /*calculation of the elements in the ELECTRIC FIELD*/
-  double Ex[grid_rows-1][grid_rows-1] = {0};
-  double Ey[grid_cols-1][grid_cols-1] = {0};
-  double Ex_prime[grid_rows-1][grid_rows-1] = {0};
-  double Ey_prime[grid_cols-1][grid_cols-1] = {0};
+  double Ex[grid_rows-1][grid_cols-1] = {0};
+  double Ey[grid_rows-1][grid_cols-1] = {0};
+  double Ex_prime[grid_rows-1][grid_cols-1] = {0};
+  double Ey_prime[grid_rows-1][grid_cols-1] = {0};
 
 
   //These for statements define the stagered electric field samples

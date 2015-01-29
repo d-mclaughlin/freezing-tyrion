@@ -30,3 +30,8 @@
 *.jpg
 # Data files
 *.dat
+# Junk files from latex
+*.log
+*.aux
+*.pdf
+*.synctex.gz

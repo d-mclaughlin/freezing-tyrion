@@ -103,7 +103,14 @@ for (int row=0; row < (grid_rows-1); row++){
   // Note the reversed order of outputting rows
   for (int row=0; row < grid_rows-1; row += 3 ) {
     for (int col=0; col<grid_cols-1; col+= 3) {
-      output3  << row << " "<< col << " "<<Ex_prime[row][col] << " " << Ey_prime[row][col] <<endl;
+
+      double x = Ex_prime[row][col];
+      double y = Ey_prime[row][col];
+
+      //this is used to normalize the vector(This was Marks idea so that the 
+      //electric field would look better)
+      double NormVector = sqrt(x*x + y*y);
+      output3  << row << " "<< col << " "<<x/NormVector << " " << y/NormVector <<endl;
 
     }
     output3 << endl;

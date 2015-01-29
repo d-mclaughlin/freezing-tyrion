@@ -28,3 +28,8 @@
 # Pictures
 *.eps
 *.jpg
+# Junk files from latex
+*.log
+*.aux
+*.pdf
+*.synctex.gz

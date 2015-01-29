@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
   const int grid_spacing = 1;
 
   // Initialise the grid to 0
-  double v[grid_rows * grid_cols] = {0};
+  double v[grid_rows][grid_cols] = {0};
 
   // Boundary conditions
   double top_plate = 100.0;

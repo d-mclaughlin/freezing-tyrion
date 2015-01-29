@@ -71,18 +71,21 @@ int main(void) {
 
   for (int iter = 0; iter < max_iterate; iter++) {
     for (int row = 1; row < (grid_rows - 1); row++) {
-      for (int col = 1; col < (grid_cols - 1); col++) {
+      for (int col = 0; col < grid_cols; col++) {
         // For each point in the grid,
         //  V[i,j] = (1-s)V[i,j] + (s/4)(V[i-1,j] + V[i+1,j] + V[i,j-1] + v[i,j+1])
         // where s is the relaxation constant
         // Check reference 3, page 49 for more.
-
+        if (col == 0) {
+        v[row][col] = (1 - relaxation) * v[row][col] + (relaxation / 4) *  
+          (v[row-1][col] + v[row+1][col] + v[row][col+1]);
+        } else if (col == (grid_cols - 1)) {
+          v[row][col] = (1 - relaxation) * v[row][col] + (relaxation / 4) *  
+          (v[row-1][col] + v[row+1][col] + v[row][col-1]);
+        } else {
         v[row][col] = (1 - relaxation) * v[row][col] + (relaxation / 4) * 
           (v[row-1][col] + v[row+1][col] + v[row][col-1] + v[row][col+1]);
-        
-        // This misses out the sides of the domain.
-        //  The easiest way of fixing this would be to make special cases
-        //  for the two sides. Maybe there's a better way though?
+        }
       }
     }
   }

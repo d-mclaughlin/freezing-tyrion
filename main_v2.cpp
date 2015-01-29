@@ -6,17 +6,17 @@
 
 using namespace std;
 
-int main(void) {
+int main(int argc, char *argv[]) {
 
   // Define a grid.
   // NOTE: The code could be extended by making a varying grid.
-  const int grid_rows = 230;
-  const int grid_cols = 230;
+  const int grid_rows = (argc > 1) ? atoi(argv[1]) : 230;
+  const int grid_cols = (argc > 2) ? atoi(argv[1]) : 230;
   // NOTE(Laurynas): Do we want this to be the case all the time?
   const int grid_spacing = 1;
 
   // Initialise the grid to 0
-  double v[grid_rows][grid_cols] = {0};
+  double v[grid_rows * grid_cols] = {0};
 
   // Boundary conditions
   double top_plate = 100.0;

@@ -28,6 +28,8 @@
 # Pictures
 *.eps
 *.jpg
+# Data files
+*.dat
 # Junk files from latex
 *.log
 *.aux

@@ -24,7 +24,7 @@ gnuplot << EOF
   ###############################
 
   set term postscript
-  set output "plot.eps"
+  set output "potential.eps"
 
   set pm3d map
   set size square

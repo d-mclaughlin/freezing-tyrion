@@ -1,12 +1,13 @@
+#include <cmath>
 #include "main.h"
 
 int FindElectricField(float v[], int grid_rows, int grid_cols, int grid_spacing) {
   // Initialise the electric field grid
   // E prime is just the grid offset so it lines up with the voltage grid
-  double Ex[(grid_rows-1) * (grid_cols-1)] = {};
-  double Ey[(grid_rows-1) * (grid_cols-1)] = {};
-  double Ex_prime[(grid_rows-1) * (grid_cols-1)] = {};
-  double Ey_prime[(grid_rows-1) * (grid_cols-1)] = {};
+  double Ex[(grid_rows-1) * (grid_cols-1)];
+  double Ey[(grid_rows-1) * (grid_cols-1)];
+  double Ex_prime[(grid_rows-1) * (grid_cols-1)];
+  double Ey_prime[(grid_rows-1) * (grid_cols-1)];
 
 
   //These for statements define the stagered electric field samples

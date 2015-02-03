@@ -1,7 +1,3 @@
-/*
- * Exactly the same as main.cpp except the voltage array is 1D
- */
-
 /******************************************************************************
   Solving Poisson's equation for arbitrary initial conditions 
   by using the finite difference method and Successive Over-Relaxation.
@@ -25,25 +21,30 @@
   
 *************************************************************************************************************************************************/
 
-#include "main_1D.h"
+#include "main.h"
+#include <iostream>
 
-#define array[row, col] array[row * grid_cols + col]
+void Parse(char *filename, float v[], int grid_rows, int grid_cols);
+int FindElectricField(float v[], int grid_rows, int grid_cols, int grid_spacing);
 
 int main(int argc, char *argv[]) {
-  const int grid_rows = (argc > 1) ? atoi(argv[1]) : 230;
-  const int grid_cols = (argc > 2) ? atoi(argv[2]) : 230;
+  const int grid_rows = (argc > 1) ? atoi(argv[1]) : 200;
+  const int grid_cols = (argc > 2) ? atoi(argv[2]) : 200;
   
-  //const int grid_spacing = 1;
+  // Change this to change the initial conditions
+  char initial_condition_file[50] = "systemA.txt";
+  // TODO(david): Get this as an argument so we can more easily
+  //  change the initial conditions.
+  
+  // We may want to change this later
+  const int grid_spacing = 1;
 
   // Initialise the grid to 0
   float v[grid_rows * grid_cols];
+  
   for (int element = 0; element < (grid_rows * grid_cols); element++) {
     v[element] = 0;
   }
-
-  // Change this to change the initial conditions
-  //                                vvvvvvvvvvvv
-  char initial_condition_file[50] = "systemA.txt";
 
   // Grab initial conditions from the text file.
   Parse(initial_condition_file, v, grid_rows, grid_cols);
@@ -52,10 +53,8 @@ int main(int argc, char *argv[]) {
   for (int row = 1; row < (grid_rows - 1); row++) {
     for (int col = 1; col < (grid_cols - 1); col++) {
       v[row, col] = (1/4.0f) * 
-        (v[(row-1), col] + 
-         v[(row+1), col] + 
-         v[row, (col-1)] + 
-         v[row, (col+1)]);
+        (v[(row-1), col] + v[(row+1), col] + 
+         v[row, (col-1)] + v[row, (col+1)]);
     }
   }
 
@@ -82,7 +81,7 @@ int main(int argc, char *argv[]) {
         if (row == 0) {
           v[row, col] = (1 - relaxation) * 
             v[row, col] + (relaxation / 4) *  
-            (v[(row+1), col] +
+            (v[(row+1), col] + 
              v[row, (col-1)] +
              v[row * grid_cols + (col+1)]);
         } else if (row == (grid_rows - 1)) {
@@ -118,7 +117,7 @@ int main(int argc, char *argv[]) {
   }
   file.close();
 
-  find_electric_field(v, grid_rows, grid_cols, grid_spacing);
+  FindElectricField(v, grid_rows, grid_cols, grid_spacing);
 
   return 0;
 }

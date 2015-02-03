@@ -103,6 +103,8 @@ int main(int argc, char *argv[]) {
     //  every grid point inside such a shape to 0 by interpreting
     //  the text file. Also set the voltages of the plates back to their
     //  fixed voltages.
+
+    // Where is this line supposed to go?
     Parse(initial_condition_file, v, grid_rows, grid_cols);
   }
 
@@ -117,6 +119,5 @@ int main(int argc, char *argv[]) {
   file.close();
 
   FindElectricField(v, grid_rows, grid_cols, grid_spacing);
-
   return 0;
 }

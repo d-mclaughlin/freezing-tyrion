@@ -27,7 +27,7 @@ int FindElectricField(float v[], int grid_rows, int grid_cols, int grid_spacing)
   }
 
   // outputting the data to file for plotting the ELECTRIC FIELD
-  std::ofstream output ("electricfield.dat");
+  std::ofstream output ("ElectricField.dat");
 
   // Note the reversed order of outputting rows
   for (int row = 0; row < (grid_rows - 1); row += 3 ) {

@@ -1,2 +1,2 @@
-%.exe: %.cpp parser.cpp
-	g++ -o $@ $^ -std=c++0x -Wall
+%.exe: %.cpp
+	g++ -o $@ $^ -Wall

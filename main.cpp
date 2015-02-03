@@ -73,7 +73,6 @@ int main(int argc, char *argv[]) {
 
   for (int iter = 0; iter < max_iterate; iter++) {
     for (int row = 0; row < grid_rows; row++) {
-      for (int col = 1; col < (grid_cols - 1); col++) {
         // For each point in the grid,
         //  V[i,j] = (1-s)V[i,j] + (s/4)(V[i-1,j] + V[i+1,j] + V[i,j-1] + v[i,j+1])
         // where s is the relaxation constant

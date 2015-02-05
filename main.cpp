@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
   const int grid_cols = (argc > 2) ? atoi(argv[2]) : 200;
   
   // Change this to change the initial conditions
-  char initial_condition_file[50] = "systemA.txt";
+  char initial_condition_file[50] = "systemF.txt";
   // TODO(david): Get this as an argument so we can more easily
   //  change the initial conditions.
   
@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
 
   // TODO(david): Swap out max_iterate for some kind of residuals?
   //  I couldn't get it working on 22/1 but it might be the way to go.
-  const int max_iterate = 10000;
+  const int max_iterate = 50000;
 
   for (int iter = 0; iter < max_iterate; iter++) {
     for (int row = 0; row < grid_rows; row++) {

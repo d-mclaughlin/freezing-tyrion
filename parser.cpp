@@ -57,7 +57,7 @@
  *  don't reckon it'll be worth it.
  */
 
-void Parse(char *filename, float v[], int grid_rows, int grid_cols) {
+void Parse(std::string filename, float v[], int grid_rows, int grid_cols) {
   std::ifstream inFile(filename);
 
   std::string line;
@@ -133,7 +133,7 @@ void Parse(char *filename, float v[], int grid_rows, int grid_cols) {
     } else if (!shape_type.compare("plate")) {
       // Process the rest of the line to get the coordinates
       std::string coord;
-      int coords[3];
+      float coords[3];
       
       char orientation;
       linestream >> orientation;
@@ -141,20 +141,22 @@ void Parse(char *filename, float v[], int grid_rows, int grid_cols) {
       int i = 0;
       while (linestream.good() && i < 3) {
         linestream >> coord;
-        coords[i] = std::stoi(coord);
+        coords[i] = std::stof(coord);
         i++;
       }
       // Coords is now [starting_row, starting_col, length]
 
       // Convert coordinates
-      int starting_row = floor(coords[0] * grid_rows);
-      int starting_col = floor(coords[1] * grid_cols);
+      // These are backwards because it's humanly intuitive to write (x,y) but
+      //  computerly intuitive to have (row, col)
+      int starting_row = floor(coords[1] * grid_rows);
+      int starting_col = floor(coords[0] * grid_cols);
 
       float voltage;
       linestream >> voltage;
 
       if (orientation == 'h') {
-        int length = coords[2] * grid_cols;
+        int length = floor(coords[2] * grid_cols);
 
         for (int col = starting_col; col < (starting_col + length); col++) {
           if (starting_row == grid_rows) {
@@ -165,7 +167,7 @@ void Parse(char *filename, float v[], int grid_rows, int grid_cols) {
 
         }
       } else if (orientation == 'v') {
-        int length = coords[2] * grid_rows;
+        int length = floor(coords[2] * grid_rows);
 
         for (int row = starting_row; row < (starting_row + length); row++) {
           if (starting_col == grid_cols) {
@@ -182,13 +184,13 @@ void Parse(char *filename, float v[], int grid_rows, int grid_cols) {
     }
   }
 }
-/*
+
 #include <fstream>
 int main(void) {
-  int grid_rows = 200;
-  int grid_cols = 200;
-  float v[200 * 200] = {};
-  Parse("systemA.txt", v, grid_rows, grid_cols);
+  int grid_rows = 16;
+  int grid_cols = 16;
+  float v[16 * 16] = {};
+  Parse("systemF.txt", v, grid_rows, grid_cols);
 
   std::ofstream file("potential.dat", std::ofstream::out);
   for (int row = 0; row < grid_rows; row++) {
@@ -199,4 +201,3 @@ int main(void) {
   }
   file.close();
 }
-*/

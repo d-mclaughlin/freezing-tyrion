@@ -1,0 +1,67 @@
+%% Preamble
+%
+%% Packages
+\documentclass[12pt]{article}
+\usepackage{geometry} 
+\geometry{a4paper}                   
+\usepackage[parfill]{parskip}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{enumerate}
+\usepackage{booktabs}
+\usepackage{pdfpages}
+ 
+% Solarized palette -- definitions of colors to be used later
+\definecolor{solarizedBase03}{RGB}{0,43,54}
+\definecolor{solarizedBase02}{RGB}{7,54,66}
+\definecolor{solarizedBase01}{RGB}{88,110,117}
+\definecolor{solarizedBase00}{RGB}{101,123,131}
+\definecolor{solarizedBase0}{RGB}{131,148,150}
+\definecolor{solarizedBase1}{RGB}{147,161,161}
+\definecolor{solarizedBase2}{RGB}{238,232,213}
+\definecolor{solarizedBase3}{RGB}{253,246,227}
+\definecolor{solarizedYellow}{RGB}{181,137,0}
+\definecolor{solarizedOrange}{RGB}{203,75,22}
+\definecolor{solarizedRed}{RGB}{220,50,47}
+\definecolor{solarizedMagenta}{RGB}{211,54,130}
+\definecolor{solarizedViolet}{RGB}{108,113,196}
+\definecolor{solarizedBlue}{RGB}{38,139,210}
+\definecolor{solarizedCyan}{RGB}{42,161,152}
+\definecolor{solarizedGreen}{RGB}{133,153,0}
+
+%% Define the line number styles. 
+ \definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+ 
+%% Style definition for code highlighting
+\lstdefinestyle{highlight}{
+    %%backgroundcolor=\color{solarizedBase3},   % Uncomment if add a background color 
+    commentstyle=\color{solarizedBase1},
+    keywordstyle=\color{solarizedBlue},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{solarizedGreen},
+    basicstyle=\ttfamily\color{solarizedBase01},
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b, % change to t if want captions at the top
+    keepspaces=true,                 
+    numbers=left, % line numbering
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    xleftmargin=.05\textwidth
+}
+ 
+%% Set default style for lstdefine
+\lstset{style=highlight}
+
+%%%%%%%%%% END PREAMBLE %%%%%%%%%%%%%
+%%%
+%% Begin document
+\begin{document}
+blah blah
+\end{document}

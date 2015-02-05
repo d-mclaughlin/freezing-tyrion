@@ -44,7 +44,6 @@
 #include <string>
 #include <sstream>    // istringstream
 #include "main.h"
-#include <iostream>
 
 /* TODO(david): We should get this working with relative coordinates so
  *  we don't need to change the text file every time we change the grid
@@ -57,7 +56,7 @@
  *  don't reckon it'll be worth it.
  */
 
-void Parse(std::string filename, float v[], int grid_rows, int grid_cols) {
+void Parse(char* filename, float v[], int grid_rows, int grid_cols) {
   std::ifstream inFile(filename);
 
   std::string line;
@@ -184,7 +183,7 @@ void Parse(std::string filename, float v[], int grid_rows, int grid_cols) {
     }
   }
 }
-
+/*
 #include <fstream>
 int main(void) {
   int grid_rows = 16;
@@ -201,3 +200,4 @@ int main(void) {
   }
   file.close();
 }
+*/

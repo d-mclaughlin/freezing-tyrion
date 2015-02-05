@@ -12,14 +12,14 @@ else
 fi
 
 # We need C++11 for some string manipulation functions in parser.cpp
-#g++ -o main.exe main.cpp parser.cpp find_electric_field.cpp -std=c++0x
+g++ -o main.exe main.cpp parser.cpp find_electric_field.cpp -std=c++0x
 # Maybe it's time we had a makefile for that, although it still doesn't
 #   take very long so the benefit would be purely aesthetic
 
-#./main.exe "$rows" "$cols"
+./main.exe "$rows" "$cols"
 
-g++ -o parser.exe parser.cpp -std=c++0x
-./parser.exe
+#g++ -o parser.exe parser.cpp -std=c++0x
+#./parser.exe
 
 gnuplot << EOF
   ###############################

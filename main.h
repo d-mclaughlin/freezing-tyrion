@@ -5,6 +5,4 @@
 #include <cmath>
 #include <fstream>
 
-#define array[row, col] array[row * grid_cols + col]
-
 #endif

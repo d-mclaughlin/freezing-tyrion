@@ -1,7 +1,7 @@
 #include <cmath>
 #include "main.h"
 
-int FindElectricField(float v[], int grid_rows, int grid_cols, int grid_spacing) {
+void FindElectricField(float v[], int grid_rows, int grid_cols, int grid_spacing) {
   // Initialise the electric field grid
   // E prime is just the grid offset so it lines up with the voltage grid
   double Ex[(grid_rows-1) * (grid_cols-1)];
@@ -27,7 +27,7 @@ int FindElectricField(float v[], int grid_rows, int grid_cols, int grid_spacing)
   }
 
   // outputting the data to file for plotting the ELECTRIC FIELD
-  std::ofstream output ("electricfield.dat");
+  std::ofstream output ("ElectricField.dat");
 
   // Note the reversed order of outputting rows
   for (int row = 0; row < (grid_rows - 1); row += 3 ) {

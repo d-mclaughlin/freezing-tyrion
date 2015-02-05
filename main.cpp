@@ -22,26 +22,23 @@
 *************************************************************************************************************************************************/
 
 #include "main.h"
-#include <iostream>
 
+// Function prototypes
 void Parse(char *filename, float v[], int grid_rows, int grid_cols);
-int FindElectricField(float v[], int grid_rows, int grid_cols, int grid_spacing);
+void FindElectricField(float v[], int grid_rows, int grid_cols, int grid_spacing);
 
 int main(int argc, char *argv[]) {
-  const int grid_rows = (argc > 1) ? atoi(argv[1]) : 200;
-  const int grid_cols = (argc > 2) ? atoi(argv[2]) : 200;
-  
   // Change this to change the initial conditions
-  char initial_condition_file[50] = "systemA.txt";
-  // TODO(david): Get this as an argument so we can more easily
-  //  change the initial conditions.
+  char initial_condition_file[50] = argv[1];
+
+  const int grid_rows = (argc > 2) ? atoi(argv[2]) : 200;
+  const int grid_cols = (argc > 3) ? atoi(argv[3]) : 200;
   
   // We may want to change this later
   const int grid_spacing = 1;
 
   // Initialise the grid to 0
   float v[grid_rows * grid_cols];
-  
   for (int element = 0; element < (grid_rows * grid_cols); element++) {
     v[element] = 0;
   }
@@ -52,9 +49,9 @@ int main(int argc, char *argv[]) {
   // The voltage at each point is the average of the points around it.
   for (int row = 1; row < (grid_rows - 1); row++) {
     for (int col = 1; col < (grid_cols - 1); col++) {
-      v[row, col] = (1/4.0f) * 
-        (v[(row-1), col] + v[(row+1), col] + 
-         v[row, (col-1)] + v[row, (col+1)]);
+      v[row * grid_cols + col] = (1/4.0f) * 
+        (v[(row-1) * grid_cols + col] + v[(row+1) * grid_cols + col] + 
+         v[row * grid_cols + (col-1)] + v[row * grid_cols + (col+1)]);
     }
   }
 
@@ -69,7 +66,7 @@ int main(int argc, char *argv[]) {
 
   // TODO(david): Swap out max_iterate for some kind of residuals?
   //  I couldn't get it working on 22/1 but it might be the way to go.
-  const int max_iterate = 10000;
+  const int max_iterate = 50000;
 
   for (int iter = 0; iter < max_iterate; iter++) {
     for (int row = 0; row < grid_rows; row++) {
@@ -79,17 +76,17 @@ int main(int argc, char *argv[]) {
         // where s is the relaxation constant
         // Check reference 3, page 49 for more.
         if (row == 0) {
-          v[row, col] = (1 - relaxation) * 
-            v[row, col] + (relaxation / 4) *  
-            (v[(row+1), col] + 
-             v[row, (col-1)] +
+          v[row * grid_cols + col] = (1 - relaxation) * 
+            v[row * grid_cols + col] + (relaxation / 4) *  
+            (v[(row+1) * grid_cols + col] +
+             v[row * grid_cols + (col-1)] +  
              v[row * grid_cols + (col+1)]);
         } else if (row == (grid_rows - 1)) {
           v[row * grid_cols + col] = (1 - relaxation) * 
             v[row * grid_cols + col] + (relaxation / 4) *  
             (v[(row-1) * grid_cols + col] + 
-             v[(col+1) * grid_cols + col] + 
-             v[row * grid_cols + (col-1)]);
+             v[row * grid_cols + (col-1)] + 
+             v[row * grid_cols + (col+1)]);
         } else {
           v[row * grid_cols + col] = (1 - relaxation) * 
             v[row * grid_cols + col] + (relaxation / 4) *
@@ -108,16 +105,14 @@ int main(int argc, char *argv[]) {
   }
 
   std::ofstream file("potential.dat", std::ofstream::out);
-  for (int element = 0; element < (grid_rows * grid_cols); element++) {
-    if (element % grid_cols != 0) {
-      file << v[element] << " ";
-    } else {
-      file << "\n";
+  for (int row = 0; row < grid_rows; row++) {
+    for (int col = 0; col < grid_cols; col++) {
+      file << v[row * grid_cols + col] << " ";
     }
+    file << "\n";
   }
   file.close();
 
   FindElectricField(v, grid_rows, grid_cols, grid_spacing);
-
   return 0;
 }

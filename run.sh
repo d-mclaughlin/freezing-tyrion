@@ -2,10 +2,11 @@
 
 # Set up default values for the size of the grid. The grid can
 #   be any size, but the text file needs to be changed to match.
-if [ "$#" -eq 2 ]
+if [ "$#" -eq 3 ]
 then
-  rows="$1"
-  cols="$2"
+  filename="$1"
+  rows="$2"
+  cols="$3"
 else
   rows=200
   cols=200
@@ -16,7 +17,7 @@ g++ -o main.exe main.cpp parser.cpp find_electric_field.cpp -std=c++0x
 # Maybe it's time we had a makefile for that, although it still doesn't
 #   take very long so the benefit would be purely aesthetic
 
-./main.exe "$rows" "$cols"
+./main.exe "$filename" "$rows" "$cols"
 
 #g++ -o parser.exe parser.cpp -std=c++0x
 #./parser.exe

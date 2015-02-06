@@ -38,6 +38,7 @@ int main(void) {
   for (int row=1; row < (grid_rows-1); row++) {
     for (int col=1; col < (grid_cols-1); col++) {
       distance_sqrd = (col - a)*(col - a) + (row - b)*(row - b);
+      // If the grid element is in the area of a circle then its value is 0
       if (distance_sqrd <= r_sqrd)
 	v[row * grid_cols + col] = 0;
       else // general case
@@ -48,6 +49,11 @@ int main(void) {
   // Further iteration to increase accuracy
   int max_iterate = 100000;
   float err_bound = pow(10, -3);
+  const float PI = 3.141592654f;
+  // This is a general formula for calculating the relaxation factor for rectangular grids.
+  // NOTE: IT PRODUCES A MORE ACCURATE VALUE (1.93909...) BUT IT SEEMS THAT THIS VALUE INCREASES THE NUMBER OF ITERATIONS. 
+  //float relax = 4.0f/(2 + sqrt(4 - (cos(PI/(grid_rows-1)) + cos(PI/(grid_cols-1))) * (cos(PI/(grid_rows-1)) + cos(PI/(grid_cols-1)))));
+  // THE MOST EFFICIENT VALUE I HAVE FOUND BY TRIAL AND ERROR. TWICE AS EFFICIENT AS THE ABOVE VALUE! 
   float relax = 1.9f;
   for (int k=1; k <= max_iterate; k++) {
     if (k%1000==0)
@@ -55,10 +61,13 @@ int main(void) {
     for (int row=0; row < grid_rows; row++) {
       for (int col=1; col < (grid_cols - 1); col++) {
 	distance_sqrd = (col - a)*(col - a) + (row - b)*(row - b);
+	// Reinitialise circle
 	if (distance_sqrd <= r_sqrd)
 	  new_v[row * grid_cols + col] = 0;
+	// Equate the top edge to the next row
 	else if (row == 0)
 	  new_v[col] = v[grid_cols + col];
+	// Equate the bottom edge to the previous row
 	else if (row == (grid_rows - 1)) // similar to the above
 	  new_v[row * grid_cols + col] = v[(row-1) * grid_cols + col];
 	else // general case
@@ -66,7 +75,7 @@ int main(void) {
       }
     }
     
-    // Check the difference between the elements of the new matrix and the previous. Act appropriatly in case of different errors    
+    // Check the difference between the elements of the new and the previous matrix. Act appropriatly in case of different errors    
     float err = error_check(v, new_v, grid_rows, grid_cols, err_bound);
     //    cout << err << endl;
     if (err <= err_bound) {
@@ -85,14 +94,14 @@ int main(void) {
     // The end of the solution
   }
     
-  // Produce a file and store the solution
+  // Produce a file and store the solution in a form of an array/matrix
   fprint_matrix(new_v, grid_rows, grid_cols);
 
-  // Print out the potential values as well as the coordinates
+  // Print out the potential values as well as the coordinates: x, y, v(x,y);
   data_equipotential(new_v, grid_rows, grid_cols);
 
   
-  // Find the electric field
+  // Find the electric field and produce an appropriate data file
   electric_field(new_v, grid_rows, grid_cols, grid_spacing);
   
   return 0;

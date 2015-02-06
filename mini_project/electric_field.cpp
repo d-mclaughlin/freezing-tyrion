@@ -2,11 +2,6 @@
 
 void electric_field(float v[], int grid_rows, int grid_cols, float grid_spacing) {
 
-  // Defining and initializing constants
-  //const float grid_spacing = 1;
-  //const int grid_rows = 100;
-  //const int grid_cols = 100;
-
   // Define 1D arrays simulating 2D arrays to store values of electric field
   float Ex[(grid_rows) * (grid_cols)];
   float Ey[(grid_rows) * (grid_cols)];
@@ -41,7 +36,7 @@ void electric_field(float v[], int grid_rows, int grid_cols, float grid_spacing)
       
       //this is used to normalize the vector(This was Marks idea so that the electric field would look better)
       float NormVector = sqrt(x*x + y*y);
-      // LAURYNAS: SWAPPED "ROW" AND "COL" IN THE FIRST TWO OUTPUTS -- CURRENT PLOT SEEMS CORRECT. I tend to think that col refers to x-axis and row to y-axis.
+
       output  << col << " "<< row << " "<< x/NormVector << " " << y/NormVector << endl;
 
     }

@@ -60,4 +60,4 @@ set cntrparam order 4
 #set cntrparam levels incremental -2.5,0.2,26
 set cntrparam level auto 26
 
-splot "matrix_potential.dat" matrix with image notitle, "potential.dat" with lines lt 1 lw 2 title "Potential"
+splot "potential_matrix.dat" matrix with image notitle, "equipotential.dat" with lines lt 1 lw 2 title "Potential"

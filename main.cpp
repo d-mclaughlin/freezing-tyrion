@@ -28,8 +28,8 @@ void parse(char *filename, float v[], int grid_rows, int grid_cols);
 void electric_field(float v[], int grid_rows, int grid_cols, float grid_spacing);
 
 int main(int argc, char *argv[]) {
-  const int grid_rows = (argc > 1) ? atoi(argv[1]) : 200;
-  const int grid_cols = (argc > 2) ? atoi(argv[2]) : 200;
+  const int grid_rows = atoi(argv[1]);
+  const int grid_cols = atoi(argv[2]);
   
   char *initial_condition_file = argv[3];
   

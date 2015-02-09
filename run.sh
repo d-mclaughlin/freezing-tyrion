@@ -103,6 +103,6 @@ gnuplot << EOF
 EOF
 echo "Done!"
 
-gv potential.eps &2> /dev/null
-gv electric_field.eps &2> /dev/null
-gv equipotential.eps &2> /dev/null
+gv potential.eps 
+gv electric_field.eps
+gv equipotential.eps

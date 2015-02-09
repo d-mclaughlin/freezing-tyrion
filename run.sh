@@ -11,13 +11,13 @@ else
   cols=200
 fi
 
-# We need C++11 for some string manipulation functions in parser.cpp
-g++ -o main.exe main.cpp parser.cpp find_electric_field.cpp -std=c++0x
-# Maybe it's time we had a makefile for that, although it still doesn't
-#   take very long so the benefit would be purely aesthetic
+make
 
+echo "Running..."
 ./main.exe "$rows" "$cols"
+echo "Done!"
 
+echo "Plotting..."
 gnuplot << EOF
   ###############################
   #     Potential field plot    #
@@ -47,6 +47,7 @@ gnuplot << EOF
   set style arrow 1
   plot "electricfield.dat" using 1:2:3:4 with vectors lt 1 
 EOF
+echo "Done!"
 
 gv potential.eps
 #gv electricfield.eps

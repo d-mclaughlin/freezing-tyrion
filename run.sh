@@ -11,6 +11,8 @@ else
   cols=200
 fi
 
+# I can't seem to get this line working with makefile so it's here for now
+g++ -c -o parser.o parser.cpp -std=c++0x -Wall -g
 make
 make clean
 
@@ -95,7 +97,7 @@ gnuplot << EOF
   #set cntrparam levels incremental -2.5,0.2,26
   set cntrparam level auto 26
 
-  splot "potential.dat" matrix with image notitle, "potential.dat" with lines lt 1 lw 2 title "Potential"
+  splot "matrix_potential.dat" matrix with image notitle, "potential.dat" with lines lt 1 lw 2 title "Potential"
 EOF
 echo "Done!"
 

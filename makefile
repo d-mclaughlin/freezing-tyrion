@@ -1,7 +1,7 @@
 CC=g++
 objs=parser.o electric_field.o main.o
 headers=main.h
-flags=-std=c++0x -Wall -g
+flags=-Wall -g
 
 main.exe: $(objs)
 	$(CC) $^ -o $@ $(flags)

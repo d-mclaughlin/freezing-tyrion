@@ -24,20 +24,20 @@
 #include "main.h"
 
 // Function prototypes
-void Parse(char *filename, float v[], int grid_rows, int grid_cols);
-void FindElectricField(float v[], int grid_rows, int grid_cols, int grid_spacing);
+void parse(char *filename, float v[], int grid_rows, int grid_cols);
+void electric_field(float v[], int grid_rows, int grid_cols, float grid_spacing);
 
 int main(int argc, char *argv[]) {
   const int grid_rows = (argc > 1) ? atoi(argv[1]) : 200;
   const int grid_cols = (argc > 2) ? atoi(argv[2]) : 200;
   
   // Change this to change the initial conditions
-  char initial_condition_file[50] = "systemF.txt";
+  char initial_condition_file[50] = "systemA.txt";
   // TODO(david): Get this as an argument so we can more easily
   //  change the initial conditions.
   
   // We may want to change this later
-  const int grid_spacing = 1;
+  const float grid_spacing = 1.0f;
 
   // Initialise the grid to 0
   float v[grid_rows * grid_cols];
@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
   }
 
   // Grab initial conditions from the text file.
-  Parse(initial_condition_file, v, grid_rows, grid_cols);
+  parse(initial_condition_file, v, grid_rows, grid_cols);
 
   // The voltage at each point is the average of the points around it.
   for (int row = 1; row < (grid_rows - 1); row++) {
@@ -103,7 +103,7 @@ int main(int argc, char *argv[]) {
     //  every grid point inside such a shape to 0 by interpreting
     //  the text file. Also set the voltages of the plates back to their
     //  fixed voltages.
-    Parse(initial_condition_file, v, grid_rows, grid_cols);
+    parse(initial_condition_file, v, grid_rows, grid_cols);
   }
 
   std::ofstream file("potential.dat", std::ofstream::out);
@@ -115,6 +115,6 @@ int main(int argc, char *argv[]) {
   }
   file.close();
 
-  FindElectricField(v, grid_rows, grid_cols, grid_spacing);
+  electric_field(v, grid_rows, grid_cols, grid_spacing);
   return 0;
 }

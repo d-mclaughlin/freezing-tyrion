@@ -19,11 +19,12 @@ echo "Done!"
 
 echo "Plotting..."
 gnuplot << EOF
+  set term postscript
+
   ###############################
   #     Potential field plot    #
   ###############################
 
-  set term postscript
   set output "potential.eps"
 
   set pm3d map
@@ -43,11 +44,18 @@ gnuplot << EOF
   #     Electric field plot     #
   ###############################
 
-  set output "electricfield.eps"
+  set title "Electric Field of The Numerical Solution"
+  set output "electric_field.eps"
   set style arrow 1
-  plot "electricfield.dat" using 1:2:3:4 with vectors lt 1 
+  set key off
+  plot "electric_field.dat" using 1:2:3:4 with vectors lt 1
+
+  ###################################################################################
+  #   The equipotential field plot is large enough to fit in its own file I think.  #
+  #   The only problem is making that work with this.                               #
+  ###################################################################################
 EOF
 echo "Done!"
 
 gv potential.eps
-#gv electricfield.eps
+gv electric_field.eps

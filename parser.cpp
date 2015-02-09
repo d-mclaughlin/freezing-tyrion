@@ -162,22 +162,3 @@ void parse(char* filename, float v[], int grid_rows, int grid_cols) {
     }
   }
 }
-
-/*
-#include <fstream>
-int main(void) {
-  int grid_rows = 16;
-  int grid_cols = 16;
-  float v[16 * 16] = {};
-  Parse("systemF.txt", v, grid_rows, grid_cols);
-
-  std::ofstream file("potential.dat", std::ofstream::out);
-  for (int row = 0; row < grid_rows; row++) {
-    for (int col = 0; col < grid_cols; col++) {
-      file << v[row * grid_cols + col] << " ";
-    }
-    file << "\n";
-  }
-  file.close();
-}
-*/

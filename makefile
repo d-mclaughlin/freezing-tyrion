@@ -1,14 +1,13 @@
 CC=g++
 objs=parser.o electric_field.o main.o
 headers=main.h
-OFLAGS="-std=c++0x -Wall"
-EXEFLAGS=-g -Wall
+flags=-std=c++0x -Wall -g
 
 main.exe: $(objs)
-	$(CC) $^ -o $@ $(EXEFLAGS)
+	$(CC) $^ -o $@ $(flags)
 
 %.o: %.c $(headers)
-	$(CC) -c $< $(OFLAGS)
+	$(CC) -c $< $(flags)
 
 .PHONY: clean
 clean:

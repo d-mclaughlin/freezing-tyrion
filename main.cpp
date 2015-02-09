@@ -26,20 +26,16 @@
 // Function prototypes
 void parse(char *filename, float v[], int grid_rows, int grid_cols);
 void electric_field(float v[], int grid_rows, int grid_cols, float grid_spacing);
+void cpu_calc(void);
 
 int main(int argc, char *argv[]) {
-<<<<<<< HEAD
+  //This is used to extract the cpu usage data at the beginning of the process
+  system("./cpu.sh > cpu_start.dat");
+
   const int grid_rows = atoi(argv[1]);
   const int grid_cols = atoi(argv[2]);
   
   char *initial_condition_file = argv[3];
-=======
-  // Change this to change the initial conditions
-  char initial_condition_file[50] = argv[1];
-
-  const int grid_rows = (argc > 2) ? atoi(argv[2]) : 200;
-  const int grid_cols = (argc > 3) ? atoi(argv[3]) : 200;
->>>>>>> 08f12cb89b061db15b4f5e846f695b574233cfbd
   
   // We may want to change this later
   const float grid_spacing = 1.0f;
@@ -111,15 +107,29 @@ int main(int argc, char *argv[]) {
     parse(initial_condition_file, v, grid_rows, grid_cols);
   }
 
-  std::ofstream file("potential.dat", std::ofstream::out);
+  std::ofstream potential_output ("potential.dat");
+  std::ofstream matrix_output ("matrix_potential.dat");
+
   for (int row = 0; row < grid_rows; row++) {
     for (int col = 0; col < grid_cols; col++) {
-      file << v[row * grid_cols + col] << " ";
+      potential_output << v[row * grid_cols + col] << " ";
+      // NOTE(david): This no longer works since i reversed the order of outputting the rows.
+      matrix_output << v[row * grid_cols + col] << " ";
     }
-    file << "\n";
+    potential_output << "\n";
+    matrix_output << "\n";
   }
-  file.close();
+
+  potential_output.close();
+  matrix_output.close();
 
   electric_field(v, grid_rows, grid_cols, grid_spacing);
+
+  // Similarly as before this is used to extract the cpu data at the end of the program
+  system("./cpu.sh > cpu_end.dat");
+  
+  // This calculates the pecentage of CPU used by the program.
+  cpu_calc();
+
   return 0;
 }

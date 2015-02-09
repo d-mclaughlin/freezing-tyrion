@@ -18,6 +18,9 @@ g++ -c -o parser.o parser.cpp -std=c++0x -Wall -g
 make
 make clean
 
+# Clean up the directory
+rm -f cpu_start.dat cpu_end.dat
+
 echo "Running..."
 ./main.exe "$rows" "$cols" "$input_file"
 echo "Done!"

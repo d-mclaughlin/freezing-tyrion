@@ -1,5 +1,5 @@
 CC=g++
-objs=parser.o electric_field.o main.o
+objs=parser.o electric_field.o cpu.o main.o
 headers=main.h
 flags=-Wall -g
 

@@ -9,65 +9,45 @@
     Each line in the text file to be interpreted should begin with
     the shape type, then the options in the order listed below,
     then a newline.
-    The last line in the file should be "done" (without quotes)
 
     BOX
-      box top_row left_col bottom_row right_col
+      box left_col top_row right_col bottom_row
       
-      (top_row, left_col) is the top-left coordinate of the box
-      (bottom_row, right_col) is the bottom-right coordinate of the box
+      (left_col, top_row) is the top-left coordinate of the box
+      (right_col, bottom_row) is the bottom-right coordinate of the box
 
     CIRCLE
-      circle centre_row centre_col radius
+      circle centre_col centre_row radius
       
-      (centre_row, centre_col) is the coordinate of the centre of the circle
+      (centre_col, centre_row) is the coordinate of the centre of the circle
       radius is the radius of the circle
 
     PLATE
-      plate (h|v) start_row start_col length voltage
+      plate (h|v) start_col start_row length voltage
       
       the first option is 'h' or 'v', depending on whether the plate
         is orientated horizontally or vertically
-      (start_row, start_col) is the top-left coordinate of the plate
+      (start_col, start_row) is the top-left coordinate of the plate
       length is the length of the plate
       voltage is the fixed voltage of the plate
 
     All coordinates are based on the grid, from the top left, 
-    so (200, 200) would be the far bottom right of a 200x200 grid.
-    (0, 200) is the bottom left. 
-    It wouldn't make sense for a 16x16 grid for example. 
-    This is why I'm suggesting we change this into relative 
-    coordinates. So (1,1), for example, would always be the
-    bottom right.
+    so (1, 1) would be the far bottom right.
+    (0, 1) is the bottom left. 
 ****************************************************************************/
 
 #include <string>
 #include <sstream>    // istringstream
 #include "main.h"
-#include <iostream>
-
-/* TODO(david): We should get this working with relative coordinates so
- *  we don't need to change the text file every time we change the grid
- *  size.
- *
- * ^^^^ DONE BUT BROKEN kinda
- */
 
 /* TODO(david): Error checking? We're the only ones using this so I
  *  don't reckon it'll be worth it.
  */
 
-void Parse(std::string filename, float v[], int grid_rows, int grid_cols) {
+void Parse(char* filename, float v[], int grid_rows, int grid_cols) {
   std::ifstream inFile(filename);
 
   std::string line;
-
-  /* Concept for converting from script coordinates (0 to 1) to 
-   * grid coordinates (whatever to whatever):
-   *
-   * Take the number in the script, multiply by the grid_cols or grid_rows
-   * as appropriate.
-   */
 
   while(std::getline(inFile, line)) {
     std::string shape_type;
@@ -87,13 +67,13 @@ void Parse(std::string filename, float v[], int grid_rows, int grid_cols) {
         coords[i] = std::stof(coord);
         i++;
       }
-      // Coords is now [top row, left col, bottom row, right col]
+      // Coords is now [left column, top row, right column, bottom row]
 
       // Convert coordinates
-      int top_row = floor(coords[0] * grid_rows);
-      int bottom_row = floor(coords[2] * grid_rows);
-      int left_col = floor(coords[1] * grid_cols);
-      int right_col = floor(coords[3] * grid_cols);
+      int top_row = floor(coords[1] * grid_rows);
+      int bottom_row = floor(coords[3] * grid_rows);
+      int left_col = floor(coords[0] * grid_cols);
+      int right_col = floor(coords[2] * grid_cols);
 
       // Set each point inside the box to 0
       for (int row = top_row; row < bottom_row; row++) {
@@ -113,11 +93,11 @@ void Parse(std::string filename, float v[], int grid_rows, int grid_cols) {
         coords[i] = std::stof(coord);
         i++;
       }
-      // Coords is now [centre_row, centre_col, radius]
+      // Coords is now [centre column, centre row, radius]
 
       // Convert coordinates
-      int centre_row = floor(coords[0] * grid_rows);
-      int centre_col = floor(coords[1] * grid_cols);
+      int centre_row = floor(coords[1] * grid_rows);
+      int centre_col = floor(coords[0] * grid_cols);
       // NOTE(david): This line is the reason we can't use rectangular grids.
       int radius = coords[2] * grid_rows;
 
@@ -144,11 +124,9 @@ void Parse(std::string filename, float v[], int grid_rows, int grid_cols) {
         coords[i] = std::stof(coord);
         i++;
       }
-      // Coords is now [starting_row, starting_col, length]
+      // Coords is now [starting column, starting row, length]
 
       // Convert coordinates
-      // These are backwards because it's humanly intuitive to write (x,y) but
-      //  computerly intuitive to have (row, col)
       int starting_row = floor(coords[1] * grid_rows);
       int starting_col = floor(coords[0] * grid_cols);
 
@@ -185,6 +163,7 @@ void Parse(std::string filename, float v[], int grid_rows, int grid_cols) {
   }
 }
 
+/*
 #include <fstream>
 int main(void) {
   int grid_rows = 16;
@@ -201,3 +180,4 @@ int main(void) {
   }
   file.close();
 }
+*/

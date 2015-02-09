@@ -22,7 +22,6 @@
 *************************************************************************************************************************************************/
 
 #include "main.h"
-#include <iostream>
 
 // Function prototypes
 void Parse(char *filename, float v[], int grid_rows, int grid_cols);

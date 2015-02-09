@@ -44,7 +44,7 @@
  *  don't reckon it'll be worth it.
  */
 
-void parse(char* filename, float v[], int grid_rows, int grid_cols) {
+void parse(char *filename, float v[], int grid_rows, int grid_cols) {
   std::ifstream inFile(filename);
 
   std::string line;

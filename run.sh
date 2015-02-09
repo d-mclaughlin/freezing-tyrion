@@ -2,13 +2,15 @@
 
 # Set up default values for the size of the grid. The grid can
 #   be any size, but the text file needs to be changed to match.
-if [ "$#" -eq 2 ]
+if [ "$#" -eq 3 ]
 then
   rows="$1"
   cols="$2"
+  input_file="$3"
 else
   rows=200
   cols=200
+  input_file="systemA.txt"
 fi
 
 # I can't seem to get this line working with makefile so it's here for now
@@ -17,7 +19,7 @@ make
 make clean
 
 echo "Running..."
-./main.exe "$rows" "$cols"
+./main.exe "$rows" "$cols" "$input_file"
 echo "Done!"
 
 echo "Plotting..."

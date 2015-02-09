@@ -31,10 +31,7 @@ int main(int argc, char *argv[]) {
   const int grid_rows = (argc > 1) ? atoi(argv[1]) : 200;
   const int grid_cols = (argc > 2) ? atoi(argv[2]) : 200;
   
-  // Change this to change the initial conditions
-  char initial_condition_file[50] = "systemA.txt";
-  // TODO(david): Get this as an argument so we can more easily
-  //  change the initial conditions.
+  char *initial_condition_file = argv[3];
   
   // We may want to change this later
   const float grid_spacing = 1.0f;

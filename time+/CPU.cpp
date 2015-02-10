@@ -37,7 +37,24 @@ fstream myfile2("CPUEnd.dat", ios_base::in);
 
  CPU_percent= 100 * (work_over_time/total_over_time);
 
- cout << CPU_percent<<"%"<<endl;
+
+ //the starting time of the program
+fstream myfile3("time_Start.dat", ios_base::in);
+double x;
+ myfile3 >> x;
+ myfile3.close();
+
+ //end time of the program
+fstream myfile4("time_End.dat", ios_base::in);
+ double z;
+ myfile4 >> z;
+ myfile4.close();
+
+
+
+
+ cout <<"Time used by the program is " << z-x << "s"<<endl;
+ cout <<"CPU used "<< CPU_percent<<"%"<<endl;
  return CPU_percent;
 }
 

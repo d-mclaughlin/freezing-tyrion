@@ -27,6 +27,7 @@
 int main(int argc, char *argv[]) {
   // This is used to extract the cpu usage data at the beginning of the process
   system("./cpu.sh > cpu_start.dat");
+  system("./time.sh > time_Start.dat");
 
   const int grid_rows = atoi(argv[1]);
   const int grid_cols = atoi(argv[2]);
@@ -72,12 +73,11 @@ int main(int argc, char *argv[]) {
         // where s is the relaxation constant
         // Check reference 3, page 49 for more.
         if (row == 0) {
-          //new_v[row * grid_cols + col] = v[(row+1) * grid_cols + col];
           new_v[col] = v[grid_cols + col];
 
-        } else if (row == (grid_rows - 1)) {
-          //new_v[row * grid_cols + col] = v[(row - 1) * grid_cols + col];
-          new_v[row * grid_cols + col] = v[(r-1) * grid_cols + col];
+        } else if (row == (grid_rows - 1)) {          
+          new_v[row * grid_cols + col] = v[(row-1) * grid_cols + col];
+          
         } else {
           new_v[row * grid_cols + col] = (1 - relaxation) * 
             v[row * grid_cols + col] + (relaxation / 4) *
@@ -128,6 +128,7 @@ int main(int argc, char *argv[]) {
 
   // Similarly as before this is used to extract the cpu data at the end of the program
   system("./cpu.sh > cpu_end.dat");
+  system("./time.sh > time_End.dat");
   
   // This calculates the pecentage of CPU used by the program.
   cpu_calc();

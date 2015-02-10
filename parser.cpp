@@ -44,7 +44,7 @@
  *  don't reckon it'll be worth it.
  */
 
-void parse(char *filename, float v[], int grid_rows, int grid_cols) {
+void parse(char *filename, Grid *is_fixed, Grid *grid, int grid_rows, int grid_cols) {
   std::ifstream inFile(filename);
 
   std::string line;
@@ -78,7 +78,10 @@ void parse(char *filename, float v[], int grid_rows, int grid_cols) {
       // Set each point inside the box to 0
       for (int row = top_row; row < bottom_row; row++) {
         for (int col = left_col; col < right_col; col++) {
-          v[row * grid_cols + col] = 0;
+          // It's a fixed value
+          is_fixed->voltages[row * grid_cols + col] = 1;
+          // And that value is 0. We could change this so it's anything
+          grid->voltages[row * grid_cols + col] = 0;
         }
       }
 
@@ -105,7 +108,11 @@ void parse(char *filename, float v[], int grid_rows, int grid_cols) {
         for (int col = (centre_col - radius); col < (centre_col + radius); col++) {
           if ((row - centre_row) * (row - centre_row) +
               (col - centre_col) * (col - centre_col) <= radius * radius) {
-            v[row * grid_cols + col] = 0;
+            
+            // It's a fixed value
+            is_fixed->voltages[row * grid_cols + col] = 1;
+            // And that value is 0. We could change this so it's anything
+            grid->voltages[row * grid_cols + col] = 0;
           }
         }
       }
@@ -138,9 +145,16 @@ void parse(char *filename, float v[], int grid_rows, int grid_cols) {
 
         for (int col = starting_col; col < (starting_col + length); col++) {
           if (starting_row == grid_rows) {
-            v[(starting_row - 1) * grid_cols + col] = voltage;
+            // It's a fixed value
+            is_fixed->voltages[(starting_row - 1) * grid_cols + col] = 1;
+            // And that value is the voltage
+            grid->voltages[(starting_row - 1) * grid_cols + col] = voltage;
           } else {
-            v[starting_row * grid_cols + col] = voltage;
+
+            // It's a fixed value
+            is_fixed->voltages[starting_row * grid_cols + 1] = 1;
+            // And that value is the voltage
+            grid->voltages[starting_row * grid_cols + col] = voltage;
           }
 
         }
@@ -149,9 +163,11 @@ void parse(char *filename, float v[], int grid_rows, int grid_cols) {
 
         for (int row = starting_row; row < (starting_row + length); row++) {
           if (starting_col == grid_cols) {
-            v[row * grid_cols + (starting_col - 1)] = voltage;
+            is_fixed->voltages[(row * grid_cols + (starting_col - 1))] = 1;
+            grid->voltages[row * grid_cols + (starting_col - 1)] = voltage;
           } else {
-            v[row * grid_cols + starting_col] = voltage;
+            is_fixed->voltages[(row * grid_cols + starting_col)] = 1;
+            grid->voltages[row * grid_cols + starting_col] = voltage;
           }
         }
       }
@@ -162,3 +178,27 @@ void parse(char *filename, float v[], int grid_rows, int grid_cols) {
     }
   }
 }
+
+/*
+int main() {
+  int grid_rows = 200;
+  int grid_cols = 200;
+
+  Grid grid(grid_rows, grid_cols);
+  Grid is_fixed(grid_rows, grid_cols);
+
+  parse("systemA.txt", &is_fixed, &grid, grid_rows, grid_cols);
+
+  std::ofstream output ("potential_matrix.dat");
+  std::ofstream fixedoutput ("fixed.dat");
+
+  for (int row = 0; row < grid_rows; row++) {
+    for (int col = 0; col < grid_cols; col++) {
+      output << grid.voltages[row * grid_cols + col] << " ";
+      fixedoutput << is_fixed.voltages[row * grid_cols + col] << " ";
+    }
+    output << "\n";
+    fixedoutput << "\n";
+  }
+}
+*/

@@ -24,31 +24,6 @@
 #include "main.h"
 #include "functions.h"
 
-class Grid {
-public: 
-  // Initializer
-  Grid(int grid_rows, int grid_cols) {
-    int rows = grid_rows;
-    int cols = grid_cols;
-
-    float voltages[grid_rows * grid_cols];
-
-    for (int element = 0; element < grid_rows * grid_cols) {
-      voltages[element] = 0;
-    }
-  }
-
-  // Destructor
-  ~Grid();
-
-  // Evolve takes a given point on the grid and transforms it into the average of the 4 points around it
-  Evolve(int x, int y) {
-    voltages[x * cols + y] = (1 - relaxation) * voltages[x * cols + y] + (relaxation / 4) *
-      voltages[x * cols + (y+1)] + voltages[x * cols + (y-1)] +
-      voltages[(x-1) * cols + y] + voltages[(x-1) * cols + y];
-  }
-};
-
 int main(int argc, char *argv[]) {
   // This is used to extract the cpu and time usage data at the beginning of the process
   system("./cpu.sh > cpu_start.dat");
@@ -58,9 +33,6 @@ int main(int argc, char *argv[]) {
   const int grid_cols = atoi(argv[2]);
   
   char *initial_condition_file = argv[3];
-  
-  // We may want to change this later
-  const float grid_spacing = 1.0f;
 
   // Initialise three grids:
   //  Old grid is the previous guess of our grid
@@ -69,10 +41,20 @@ int main(int argc, char *argv[]) {
 
   Grid old_grid(grid_rows, grid_cols);
   Grid new_grid(grid_rows, grid_cols);
-  Grid fixed(grid_rows, grid_cols);
+  Grid is_fixed(grid_rows, grid_cols);
 
-  // Grab initial conditions from the text file.
-  parse(initial_condition_file, v, grid_rows, grid_cols);
+  // Find which points are fixed and set them to 1 in the fixed grid,
+  // And get the inital values of those fixed points and put them in the
+  //  old_grid.
+  parse(initial_condition_file, &is_fixed, &old_grid, grid_rows, grid_cols);
+
+  // Solve the system for a capacitor. We don't care about fixed values, and
+  //  the 'relaxation factor' is 1
+  for (int row = 0; row < grid_rows; row++) {
+    for (int col = 0; col < grid_cols; col++) {
+      new_grid.evolve(&old_grid, row, col, 1);  
+    }
+  }
 
 /*
   // The voltage at each point is the average of the points around it.
@@ -94,68 +76,46 @@ int main(int argc, char *argv[]) {
 
   for (int iter = 0; iter < max_iterate; iter++) {
     for (int row = 0; row < grid_rows; row++) {
-      for (int col = 1; col < (grid_cols - 1); col++) {
-        // For each point in the grid,
-        //  V[i,j] = (1-s)V[i,j] + (s/4)(V[i-1,j] + V[i+1,j] + V[i,j-1] + v[i,j+1])
-        // where s is the relaxation constant
-        // Check reference 3, page 49 for more.
-
-        // If it's the top row take the values below it as the new values
-        if (row == 0) {
-          new_v[row * grid_cols + col] = v[(row+1) * grid_cols + col];
-
-        // If it's the bottom row take the values above it as the new values
-        } else if (row == (grid_rows - 1)) {          
-          new_v[row * grid_cols + col] = v[(row-1) * grid_cols + col];
-
-        // Default case
-        } else {
-          new_v[row * grid_cols + col] = (1 - relaxation) * 
-            v[row * grid_cols + col] + (relaxation / 4) *
-             (v[row * grid_cols + (col+1)] +
-              new_v[row * grid_cols + (col-1)] + 
-              v[(row+1) * grid_cols + col] + 
-              new_v[(row-1) * grid_cols + col]); 
+      for (int col = 0; col < grid_rows; col++) {
+        // If the value of the fixed grid is zero, i.e. that value is not fixed:
+        if (!is_fixed.get(row,col)) {
+          // The value in the new grid is the average of the 4 points surrounding
+          //  it in the old grid.
+          new_grid.evolve(&old_grid, row, col, relaxation);
         }
       }
     }
-    // Find the positions of the shapes between the plates and set
-    //  every grid point inside such a shape to 0 by interpreting
-    //  the text file. Also set the voltages of the plates back to their
-    //  fixed voltages.
-    parse(initial_condition_file, v, grid_rows, grid_cols);
 
     // Check the difference between the elements of the new and the previous matrix. 
     // Act appropriately in case of different errors    
     float err_bound = pow(10, -3);
-    float err = error_check(v, new_v, grid_rows, grid_cols);
 
     // If the new voltage array is close enough to the old one then we stop.
-    if (err <= err_bound) {
+    if (error_check(old_grid.voltages, new_grid.voltages, grid_rows, grid_cols, err_bound)) {
       std::cout << "The accuracy achieved after " << iter << "th iteration" << "\n";
       break;
     }
     // If we haven't converged but we've run out of iterations then report back
-    else if (err > err_bound && iter == max_iterate) {
+    else if (iter == max_iterate) {
       std::cout << "Not enough iterations to achieve the required accuracy.\n";
-      std::cout << err << "\n";
     }
     else {
       // Set the old matrix equal to the new one ready to go again
-      equate_matrix(v, new_v, grid_rows, grid_cols);
+      //*old_grid = *new_grid; // I don't think this works
+      equate_matrix(old_grid.voltages, new_grid.voltages, grid_rows, grid_cols);
     }
     
     // The end of the solution
   }
 
   // Produce a file and store the solution in a form of an array/matrix
-  fprint_matrix(new_v, grid_rows, grid_cols);
+  fprint_matrix(new_grid.voltages, grid_rows, grid_cols);
 
   // Print out the potential values as well as the coordinates: x, y, v(x,y);
-  data_equipotential(new_v, grid_rows, grid_cols);
+  data_equipotential(new_grid.voltages, grid_rows, grid_cols);
   
   // Find the electric field and produce an appropriate data file
-  electric_field(new_v, grid_rows, grid_cols, grid_spacing);
+  electric_field(new_grid.voltages, grid_rows, grid_cols, new_grid.grid_spacing);
 
   // Similarly as before this is used to extract the cpu and time data at the end of the program
   system("./cpu.sh > cpu_end.dat");

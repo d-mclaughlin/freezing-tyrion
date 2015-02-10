@@ -14,12 +14,15 @@ else
 fi
 
 # I can't seem to get this line working with makefile so it's here for now
-g++ -c -o parser.o parser.cpp -std=c++0x -Wall -g
+g++ -c parser.cpp -std=c++0x -Wall -g
 make
 make clean
 
+#g++ -o parser.exe parser.cpp -std=c++0x
+
 echo "Running..."
 ./main.exe "$rows" "$cols" "$input_file"
+#./parser.exe
 echo "Done!"
 
 # Clean up the directory

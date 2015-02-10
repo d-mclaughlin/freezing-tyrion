@@ -25,7 +25,7 @@
 #include "functions.h"
 
 int main(int argc, char *argv[]) {
-  // This is used to extract the cpu usage data at the beginning of the process
+  // This is used to extract the cpu and time usage data at the beginning of the process
   system("./cpu.sh > cpu_start.dat");
   system("./time.sh > time_Start.dat");
 
@@ -72,12 +72,16 @@ int main(int argc, char *argv[]) {
         //  V[i,j] = (1-s)V[i,j] + (s/4)(V[i-1,j] + V[i+1,j] + V[i,j-1] + v[i,j+1])
         // where s is the relaxation constant
         // Check reference 3, page 49 for more.
-        if (row == 0) {
-          new_v[col] = v[grid_cols + col];
 
+        // If it's the top row take the values below it as the new values
+        if (row == 0) {
+          new_v[row * grid_cols + col] = v[(row+1) * grid_cols + col];
+
+        // If it's the bottom row take the values above it as the new values
         } else if (row == (grid_rows - 1)) {          
           new_v[row * grid_cols + col] = v[(row-1) * grid_cols + col];
-          
+
+        // Default case
         } else {
           new_v[row * grid_cols + col] = (1 - relaxation) * 
             v[row * grid_cols + col] + (relaxation / 4) *
@@ -126,7 +130,7 @@ int main(int argc, char *argv[]) {
   // Find the electric field and produce an appropriate data file
   electric_field(new_v, grid_rows, grid_cols, grid_spacing);
 
-  // Similarly as before this is used to extract the cpu data at the end of the program
+  // Similarly as before this is used to extract the cpu and time data at the end of the program
   system("./cpu.sh > cpu_end.dat");
   system("./time.sh > time_End.dat");
   

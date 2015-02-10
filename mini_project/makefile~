@@ -1,5 +1,5 @@
 CC=g++
-objs=electric_field.o main.o equate_matrix.o error.o fprint_matrix.o data_equipotential.o
+objs=electric_field.o main.o equate_matrix.o error_check.o
 headers=main.h functions.h
 flags=-g
 

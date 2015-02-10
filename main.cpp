@@ -22,11 +22,7 @@
 *************************************************************************************************************************************************/
 
 #include "main.h"
-
-// Function prototypes
-void parse(char *filename, float v[], int grid_rows, int grid_cols);
-void electric_field(float v[], int grid_rows, int grid_cols, float grid_spacing);
-void cpu_calc(void);
+#include "functions.h"
 
 int main(int argc, char *argv[]) {
   //This is used to extract the cpu usage data at the beginning of the process
@@ -42,8 +38,10 @@ int main(int argc, char *argv[]) {
 
   // Initialise the grid to 0
   float v[grid_rows * grid_cols];
+  float new_v[grid_rows * grid_cols];
   for (int element = 0; element < (grid_rows * grid_cols); element++) {
     v[element] = 0;
+    new_v[element] = 0;
   }
 
   // Grab initial conditions from the text file.
@@ -57,19 +55,18 @@ int main(int argc, char *argv[]) {
          v[row * grid_cols + (col-1)] + v[row * grid_cols + (col+1)]);
     }
   }
-
-  // This doesn't produce the right value for the relaxation factor...
-  float t = cos(M_PI / grid_rows) + cos(M_PI / grid_cols);
-  float relaxation = ((8 - sqrt(64 - (t*t))) / (t*t));
-
-  // ...but this value makes the calculations blow up exponentially
-  //float relaxation = 1.97f;
   
-  //float err_bound = pow(10, -6);
+  float err_bound = pow(10, -3);
 
   // TODO(david): Swap out max_iterate for some kind of residuals?
   //  I couldn't get it working on 22/1 but it might be the way to go.
-  const int max_iterate = 50000;
+  const int max_iterate = 500;
+
+  // This is a general formula for calculating the relaxation factor for rectangular grids.
+  // NOTE: IT PRODUCES A MORE ACCURATE VALUE (1.93909...) BUT IT SEEMS THAT THIS VALUE INCREASES THE NUMBER OF ITERATIONS. 
+  //float relax = 4.0f/(2 + sqrt(4 - (cos(PI/(grid_rows-1)) + cos(PI/(grid_cols-1))) * (cos(PI/(grid_rows-1)) + cos(PI/(grid_cols-1)))));
+  // THE MOST EFFICIENT VALUE I HAVE FOUND BY TRIAL AND ERROR.
+  float relaxation = 1.9f;
 
   for (int iter = 0; iter < max_iterate; iter++) {
     for (int row = 0; row < grid_rows; row++) {
@@ -105,25 +102,34 @@ int main(int argc, char *argv[]) {
     //  the text file. Also set the voltages of the plates back to their
     //  fixed voltages.
     parse(initial_condition_file, v, grid_rows, grid_cols);
-  }
 
-  std::ofstream potential_output ("potential.dat");
-  std::ofstream matrix_output ("matrix_potential.dat");
-
-  for (int row = 0; row < grid_rows; row++) {
-    for (int col = 0; col < grid_cols; col++) {
-      potential_output << v[row * grid_cols + col] << " ";
-      // NOTE(david): This no longer works since i reversed the order of outputting the rows.
-      matrix_output << v[row * grid_cols + col] << " ";
+    // Check the difference between the elements of the new and the previous matrix. Act appropriately in case of different errors    
+    float err = error_check(v, new_v, grid_rows, grid_cols, err_bound);
+    //    cout << err << endl;
+    if (err <= err_bound) {
+      std::cout << "The accuracy achieved after " << iter << "th iteration" << "\n";
+      break;
     }
-    potential_output << "\n";
-    matrix_output << "\n";
+    else if (err > err_bound && iter == max_iterate) {
+      std::cout << "Not enough iterations to achieve the required accuracy." << "\n";
+      std::cout << err << "\n";
+    }
+    else {
+      // Renew the values of the array v by equating it to the array new_v
+      *v = *new_v;
+    }
+    
+    // The end of the solution
   }
 
-  potential_output.close();
-  matrix_output.close();
+  // Produce a file and store the solution in a form of an array/matrix
+  fprint_matrix(new_v, grid_rows, grid_cols);
 
-  electric_field(v, grid_rows, grid_cols, grid_spacing);
+  // Print out the potential values as well as the coordinates: x, y, v(x,y);
+  data_equipotential(new_v, grid_rows, grid_cols);
+  
+  // Find the electric field and produce an appropriate data file
+  electric_field(new_v, grid_rows, grid_cols, grid_spacing);
 
   // Similarly as before this is used to extract the cpu data at the end of the program
   system("./cpu.sh > cpu_end.dat");

@@ -56,8 +56,6 @@ int main(int argc, char *argv[]) {
     }
   }
   
-  // TODO(david): Swap out max_iterate for some kind of residuals?
-  //  I couldn't get it working on 22/1 but it might be the way to go.
   const int max_iterate = 100000;
 
   // This is a general formula for calculating the relaxation factor for rectangular grids.
@@ -74,24 +72,19 @@ int main(int argc, char *argv[]) {
         // where s is the relaxation constant
         // Check reference 3, page 49 for more.
         if (row == 0) {
-          new_v[row * grid_cols + col] = (1 - relaxation) * 
-            v[row * grid_cols + col] + (relaxation / 4) *  
-            (v[(row+1) * grid_cols + col] +
-             v[row * grid_cols + (col-1)] +  
-             v[row * grid_cols + (col+1)]);
+          //new_v[row * grid_cols + col] = v[(row+1) * grid_cols + col];
+          new_v[col] = v[grid_cols + col];
+
         } else if (row == (grid_rows - 1)) {
-          new_v[row * grid_cols + col] = (1 - relaxation) * 
-            v[row * grid_cols + col] + (relaxation / 4) *  
-            (v[(row-1) * grid_cols + col] + 
-             v[row * grid_cols + (col-1)] + 
-             v[row * grid_cols + (col+1)]);
+          //new_v[row * grid_cols + col] = v[(row - 1) * grid_cols + col];
+          new_v[row * grid_cols + col] = v[(r-1) * grid_cols + col];
         } else {
           new_v[row * grid_cols + col] = (1 - relaxation) * 
             v[row * grid_cols + col] + (relaxation / 4) *
-            (v[(row-1) * grid_cols + col] + 
-             v[(row+1) * grid_cols + col] + 
-             v[row * grid_cols + (col-1)] + 
-             v[row * grid_cols + (col+1)]);
+             (v[row * grid_cols + (col+1)] +
+              new_v[row * grid_cols + (col-1)] + 
+              v[(row+1) * grid_cols + col] + 
+              new_v[(row-1) * grid_cols + col]); 
         }
       }
     }

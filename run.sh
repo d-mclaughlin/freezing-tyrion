@@ -102,7 +102,7 @@ gnuplot << EOF
   #set cntrparam levels incremental -2.5,0.2,26
   set cntrparam level auto 26
 
-  splot "matrix_potential.dat" matrix with image notitle, "potential.dat" with lines lt 1 lw 2 title "Potential"
+  splot "equipotential.dat" matrix with image notitle, "potential_matrix.dat" with lines lt 1 lw 2 title "Potential"
 EOF
 echo "Done!"
 

@@ -24,6 +24,31 @@
 #include "main.h"
 #include "functions.h"
 
+class Grid {
+public: 
+  // Initializer
+  Grid(int grid_rows, int grid_cols) {
+    int rows = grid_rows;
+    int cols = grid_cols;
+
+    float voltages[grid_rows * grid_cols];
+
+    for (int element = 0; element < grid_rows * grid_cols) {
+      voltages[element] = 0;
+    }
+  }
+
+  // Destructor
+  ~Grid();
+
+  // Evolve takes a given point on the grid and transforms it into the average of the 4 points around it
+  Evolve(int x, int y) {
+    voltages[x * cols + y] = (1 - relaxation) * voltages[x * cols + y] + (relaxation / 4) *
+      voltages[x * cols + (y+1)] + voltages[x * cols + (y-1)] +
+      voltages[(x-1) * cols + y] + voltages[(x-1) * cols + y];
+  }
+};
+
 int main(int argc, char *argv[]) {
   // This is used to extract the cpu and time usage data at the beginning of the process
   system("./cpu.sh > cpu_start.dat");
@@ -37,17 +62,19 @@ int main(int argc, char *argv[]) {
   // We may want to change this later
   const float grid_spacing = 1.0f;
 
-  // Initialise the grid to 0
-  float v[grid_rows * grid_cols];
-  float new_v[grid_rows * grid_cols];
-  for (int element = 0; element < (grid_rows * grid_cols); element++) {
-    v[element] = 0;
-    new_v[element] = 0;
-  }
+  // Initialise three grids:
+  //  Old grid is the previous guess of our grid
+  //  New grid is the next iteration of our grid
+  //  Fixed is the grid deciding whether a point is fixed at a certain potential
+
+  Grid old_grid(grid_rows, grid_cols);
+  Grid new_grid(grid_rows, grid_cols);
+  Grid fixed(grid_rows, grid_cols);
 
   // Grab initial conditions from the text file.
   parse(initial_condition_file, v, grid_rows, grid_cols);
 
+/*
   // The voltage at each point is the average of the points around it.
   for (int row = 1; row < (grid_rows - 1); row++) {
     for (int col = 1; col < (grid_cols - 1); col++) {
@@ -56,14 +83,14 @@ int main(int argc, char *argv[]) {
          v[row * grid_cols + (col-1)] + v[row * grid_cols + (col+1)]);
     }
   }
-  
-  const int max_iterate = 100000;
+*/
 
   // This is a general formula for calculating the relaxation factor for rectangular grids.
   // NOTE: IT PRODUCES A MORE ACCURATE VALUE (1.93909...) BUT IT SEEMS THAT THIS VALUE INCREASES THE NUMBER OF ITERATIONS. 
   //float relax = 4.0f/(2 + sqrt(4 - (cos(PI/(grid_rows-1)) + cos(PI/(grid_cols-1))) * (cos(PI/(grid_rows-1)) + cos(PI/(grid_cols-1)))));
   // THE MOST EFFICIENT VALUE I HAVE FOUND BY TRIAL AND ERROR.
   float relaxation = 1.9f;
+  const int max_iterate = 100000;
 
   for (int iter = 0; iter < max_iterate; iter++) {
     for (int row = 0; row < grid_rows; row++) {

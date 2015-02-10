@@ -25,7 +25,7 @@
 #include "functions.h"
 
 int main(int argc, char *argv[]) {
-  //This is used to extract the cpu usage data at the beginning of the process
+  // This is used to extract the cpu usage data at the beginning of the process
   system("./cpu.sh > cpu_start.dat");
 
   const int grid_rows = atoi(argv[1]);
@@ -56,11 +56,9 @@ int main(int argc, char *argv[]) {
     }
   }
   
-  float err_bound = pow(10, -3);
-
   // TODO(david): Swap out max_iterate for some kind of residuals?
   //  I couldn't get it working on 22/1 but it might be the way to go.
-  const int max_iterate = 500;
+  const int max_iterate = 100000;
 
   // This is a general formula for calculating the relaxation factor for rectangular grids.
   // NOTE: IT PRODUCES A MORE ACCURATE VALUE (1.93909...) BUT IT SEEMS THAT THIS VALUE INCREASES THE NUMBER OF ITERATIONS. 
@@ -76,19 +74,19 @@ int main(int argc, char *argv[]) {
         // where s is the relaxation constant
         // Check reference 3, page 49 for more.
         if (row == 0) {
-          v[row * grid_cols + col] = (1 - relaxation) * 
+          new_v[row * grid_cols + col] = (1 - relaxation) * 
             v[row * grid_cols + col] + (relaxation / 4) *  
             (v[(row+1) * grid_cols + col] +
              v[row * grid_cols + (col-1)] +  
              v[row * grid_cols + (col+1)]);
         } else if (row == (grid_rows - 1)) {
-          v[row * grid_cols + col] = (1 - relaxation) * 
+          new_v[row * grid_cols + col] = (1 - relaxation) * 
             v[row * grid_cols + col] + (relaxation / 4) *  
             (v[(row-1) * grid_cols + col] + 
              v[row * grid_cols + (col-1)] + 
              v[row * grid_cols + (col+1)]);
         } else {
-          v[row * grid_cols + col] = (1 - relaxation) * 
+          new_v[row * grid_cols + col] = (1 - relaxation) * 
             v[row * grid_cols + col] + (relaxation / 4) *
             (v[(row-1) * grid_cols + col] + 
              v[(row+1) * grid_cols + col] + 
@@ -103,20 +101,24 @@ int main(int argc, char *argv[]) {
     //  fixed voltages.
     parse(initial_condition_file, v, grid_rows, grid_cols);
 
-    // Check the difference between the elements of the new and the previous matrix. Act appropriately in case of different errors    
-    float err = error_check(v, new_v, grid_rows, grid_cols, err_bound);
-    //    cout << err << endl;
+    // Check the difference between the elements of the new and the previous matrix. 
+    // Act appropriately in case of different errors    
+    float err_bound = pow(10, -3);
+    float err = error_check(v, new_v, grid_rows, grid_cols);
+
+    // If the new voltage array is close enough to the old one then we stop.
     if (err <= err_bound) {
       std::cout << "The accuracy achieved after " << iter << "th iteration" << "\n";
       break;
     }
+    // If we haven't converged but we've run out of iterations then report back
     else if (err > err_bound && iter == max_iterate) {
-      std::cout << "Not enough iterations to achieve the required accuracy." << "\n";
+      std::cout << "Not enough iterations to achieve the required accuracy.\n";
       std::cout << err << "\n";
     }
     else {
-      // Renew the values of the array v by equating it to the array new_v
-      *v = *new_v;
+      // Set the old matrix equal to the new one ready to go again
+      equate_matrix(v, new_v, grid_rows, grid_cols);
     }
     
     // The end of the solution

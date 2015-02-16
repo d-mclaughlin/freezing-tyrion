@@ -55,16 +55,6 @@ int main(int argc, char *argv[]) {
       new_grid.evolve(&old_grid, row, col, 1);  
     }
   }
-  
-  std::ofstream butts("potential.dat");
-  for (int row = 0; row < grid_rows; row++) {
-    for (int col = 0; col < grid_cols; col++) {
-      butts << new_grid.get(row, col) << " ";
-    }
-    butts << "\n";
-  }
-  butts.close();
-  std::cout << "blah\n";
 
 /*
   // The voltage at each point is the average of the points around it.

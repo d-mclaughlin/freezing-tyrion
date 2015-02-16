@@ -1,6 +1,7 @@
 # Shell script to run everything in one shot
 
-# This will exit the script if anything fails.
+# If any part of this script fails then this ensures that it exits before running
+#   the rest of the program
 set -e
 
 if [ "$#" -eq 3 ]
@@ -25,6 +26,7 @@ echo "Done!"
 
 # Clean up the directory
 rm -f cpu_start.dat cpu_end.dat time_start.dat time_end.dat
+rm -f main.exe
 
 echo "Plotting..."
 gnuplot << EOF

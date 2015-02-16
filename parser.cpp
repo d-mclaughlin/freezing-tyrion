@@ -44,7 +44,7 @@
  *  don't reckon it'll be worth it.
  */
 
-void parse(char *filename, Grid *is_fixed, Grid *grid, int grid_rows, int grid_cols) {
+void parse(char *filename, Grid *is_fixed, Grid *grid) {
   std::ifstream inFile(filename);
 
   std::string line;
@@ -70,18 +70,18 @@ void parse(char *filename, Grid *is_fixed, Grid *grid, int grid_rows, int grid_c
       // Coords is now [left column, top row, right column, bottom row]
 
       // Convert coordinates
-      int top_row = floor(coords[1] * grid_rows);
-      int bottom_row = floor(coords[3] * grid_rows);
-      int left_col = floor(coords[0] * grid_cols);
-      int right_col = floor(coords[2] * grid_cols);
+      int top_row = floor(coords[1] * grid->rows);
+      int bottom_row = floor(coords[3] * grid->rows);
+      int left_col = floor(coords[0] * grid->cols);
+      int right_col = floor(coords[2] * grid->cols);
 
       // Set each point inside the box to 0
       for (int row = top_row; row < bottom_row; row++) {
         for (int col = left_col; col < right_col; col++) {
           // It's a fixed value
-          is_fixed->voltages[row * grid_cols + col] = 1;
+          is_fixed->set(row, col, 1);
           // And that value is 0. We could change this so it's anything
-          grid->voltages[row * grid_cols + col] = 0;
+          grid->set(row, col, 0);
         }
       }
 
@@ -99,10 +99,10 @@ void parse(char *filename, Grid *is_fixed, Grid *grid, int grid_rows, int grid_c
       // Coords is now [centre column, centre row, radius]
 
       // Convert coordinates
-      int centre_row = floor(coords[1] * grid_rows);
-      int centre_col = floor(coords[0] * grid_cols);
+      int centre_row = floor(coords[1] * grid->rows);
+      int centre_col = floor(coords[0] * grid->cols);
       // NOTE(david): This line is the reason we can't use rectangular grids.
-      int radius = coords[2] * grid_rows;
+      int radius = coords[2] * grid->rows;
 
       for (int row = (centre_row - radius); row < (centre_row + radius); row++) {
         for (int col = (centre_col - radius); col < (centre_col + radius); col++) {
@@ -110,9 +110,9 @@ void parse(char *filename, Grid *is_fixed, Grid *grid, int grid_rows, int grid_c
               (col - centre_col) * (col - centre_col) <= radius * radius) {
             
             // It's a fixed value
-            is_fixed->voltages[row * grid_cols + col] = 1;
+            is_fixed->set(row, col, 1);
             // And that value is 0. We could change this so it's anything
-            grid->voltages[row * grid_cols + col] = 0;
+            grid->set(row, col, 0);
           }
         }
       }
@@ -134,40 +134,39 @@ void parse(char *filename, Grid *is_fixed, Grid *grid, int grid_rows, int grid_c
       // Coords is now [starting column, starting row, length]
 
       // Convert coordinates
-      int starting_row = floor(coords[1] * grid_rows);
-      int starting_col = floor(coords[0] * grid_cols);
+      int starting_row = floor(coords[1] * grid->rows);
+      int starting_col = floor(coords[0] * grid->cols);
 
       float voltage;
       linestream >> voltage;
 
       if (orientation == 'h') {
-        int length = floor(coords[2] * grid_cols);
+        int length = floor(coords[2] * grid->cols);
 
         for (int col = starting_col; col < (starting_col + length); col++) {
-          if (starting_row == grid_rows) {
+          if (starting_row == grid->rows) {
             // It's a fixed value
-            is_fixed->voltages[(starting_row - 1) * grid_cols + col] = 1;
+            is_fixed->set((starting_row - 1), col, 1);
             // And that value is the voltage
-            grid->voltages[(starting_row - 1) * grid_cols + col] = voltage;
+            grid->set((starting_row - 1), col, voltage);
           } else {
-
             // It's a fixed value
-            is_fixed->voltages[starting_row * grid_cols + 1] = 1;
+            is_fixed->set(starting_row, col, 1);
             // And that value is the voltage
-            grid->voltages[starting_row * grid_cols + col] = voltage;
+            grid->set(starting_row, col, voltage);
           }
 
         }
       } else if (orientation == 'v') {
-        int length = floor(coords[2] * grid_rows);
+        int length = floor(coords[2] * grid->rows);
 
         for (int row = starting_row; row < (starting_row + length); row++) {
-          if (starting_col == grid_cols) {
-            is_fixed->voltages[(row * grid_cols + (starting_col - 1))] = 1;
-            grid->voltages[row * grid_cols + (starting_col - 1)] = voltage;
+          if (starting_col == grid->cols) {
+            is_fixed->set(row, (starting_col - 1), 1);
+            grid->set(row, (starting_col - 1), voltage);
           } else {
-            is_fixed->voltages[(row * grid_cols + starting_col)] = 1;
-            grid->voltages[row * grid_cols + starting_col] = voltage;
+            is_fixed->set(row, starting_col, 1);
+            grid->set(row, starting_col, voltage);
           }
         }
       }

@@ -10,13 +10,11 @@
 // Grid is a basic class containing a grid of points, and a way of getting a point 
 //  given a row and column number
 class Grid {
-private:
-  int rows;
-  int cols;
-
 public:
   std::vector<float> voltages;
-  float grid_spacing;
+  int rows;
+  int cols;
+  float spacing;
 
   // Initializer
   Grid(int grid_rows, int grid_cols) {
@@ -24,7 +22,7 @@ public:
     cols = grid_cols;
 
     // We may want to change this later
-    grid_spacing = 1.0f;
+    spacing = 1.0f;
 
     voltages.resize(rows * cols);
 
@@ -49,6 +47,10 @@ public:
   // Get
   float get(int row, int col) {
     return this->voltages[row * cols + col];
+  }
+  
+  void set(int row, int col, int value) {
+    this->voltages[row * cols + col] = value;
   }
 };
 

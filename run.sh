@@ -1,7 +1,8 @@
 # Shell script to run everything in one shot
 
-# Set up default values for the size of the grid. The grid can
-#   be any size, but the text file needs to be changed to match.
+# This will exit the script if anything fails.
+set -e
+
 if [ "$#" -eq 3 ]
 then
   rows="$1"
@@ -18,15 +19,12 @@ g++ -c parser.cpp -std=c++0x -Wall -g
 make
 make clean
 
-#g++ -o parser.exe parser.cpp -std=c++0x
-
 echo "Running..."
 ./main.exe "$rows" "$cols" "$input_file"
-#./parser.exe
 echo "Done!"
 
 # Clean up the directory
-rm -f cpu_start.dat cpu_end.dat
+rm -f cpu_start.dat cpu_end.dat time_start.dat time_end.dat
 
 echo "Plotting..."
 gnuplot << EOF
@@ -109,6 +107,7 @@ gnuplot << EOF
 EOF
 echo "Done!"
 
+# These get really annoying when testing a lot of stuff quickly so just uncomment as necessary
 gv potential.eps 
-gv electric_field.eps
-gv equipotential.eps
+#gv electric_field.eps
+#gv equipotential.eps

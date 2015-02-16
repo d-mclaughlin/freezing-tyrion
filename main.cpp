@@ -27,7 +27,7 @@
 int main(int argc, char *argv[]) {
   // This is used to extract the cpu and time usage data at the beginning of the process
   system("./cpu.sh > cpu_start.dat");
-  system("./time.sh > time_Start.dat");
+  system("./time.sh > time_start.dat");
 
   const int grid_rows = atoi(argv[1]);
   const int grid_cols = atoi(argv[2]);
@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
   // Initialise three grids:
   //  Old grid is the previous guess of our grid
   //  New grid is the next iteration of our grid
-  //  Fixed is the grid deciding whether a point is fixed at a certain potential
+  //  Is Fixed is the grid deciding whether a point is fixed at a certain point
 
   Grid old_grid(grid_rows, grid_cols);
   Grid new_grid(grid_rows, grid_cols);
@@ -101,7 +101,6 @@ int main(int argc, char *argv[]) {
     }
     else {
       // Set the old matrix equal to the new one ready to go again
-      //*old_grid = *new_grid; // I don't think this works
       equate_matrix(old_grid.voltages, new_grid.voltages, grid_rows, grid_cols);
     }
     
@@ -119,7 +118,7 @@ int main(int argc, char *argv[]) {
 
   // Similarly as before this is used to extract the cpu and time data at the end of the program
   system("./cpu.sh > cpu_end.dat");
-  system("./time.sh > time_End.dat");
+  system("./time.sh > time_end.dat");
   
   // This calculates the pecentage of CPU used by the program.
   cpu_calc();

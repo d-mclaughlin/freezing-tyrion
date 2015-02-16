@@ -28,6 +28,7 @@ public:
 
     voltages.resize(rows * cols);
 
+    // Initilase voltages vector to 0
     for (int element = 0; element < rows * cols; element++) {
       voltages[element] = 0;
     }
@@ -35,7 +36,7 @@ public:
 
   // Destructor
   ~Grid() {
-    delete this->voltages;
+    delete this;
   }
 
   // Evolve takes a given point on the grid and transforms it into the average of the 4 points around it

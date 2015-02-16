@@ -6,7 +6,7 @@ flags=-Wall -g
 main.exe: $(objs)
 	$(CC) $^ -o $@ $(flags)
 
-%.o: %.c $(headers)
+%.o: %.cpp $(headers)  
 	$(CC) -c $< $(flags)
 
 .PHONY: clean

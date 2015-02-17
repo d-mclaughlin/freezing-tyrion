@@ -37,35 +37,36 @@ int main(int argc, char *argv[]) {
   // Initialise three grids:
   //  Old grid is the previous iteration of our grid
   //  New grid is the next iteration of our grid
-  //  Is Fixed is the grid deciding whether a point is fixed to a certain votlage
+  //  Is Fixed is the grid deciding whether a point is fixed to a certain voltage
 
   Grid old_grid(grid_rows, grid_cols);
   Grid new_grid(grid_rows, grid_cols);
   Grid is_fixed(grid_rows, grid_cols);
 
   // Find which points are fixed and set them to 1 in the fixed grid,
-  // And get the inital values of those fixed points and put them in the
+  // and get the inital values of those fixed points and put them in the
   //  old_grid.
-  parse(initial_condition_file, &is_fixed, &old_grid);
-
-  // Solve the system for a capacitor. We don't care about fixed values, and
-  //  the 'relaxation factor' is 1
+  
+  // I've tested this thoroughly and it's all good
+  parse(initial_condition_file, &is_fixed, &new_grid);
+  equate_matrix(&old_grid, &new_grid);
+  
+  // Solve the system for a capacitor. In this case the 'relaxation factor' is 1
   for (int row = 0; row < grid_rows; row++) {
     for (int col = 0; col < grid_cols; col++) {
-      new_grid.evolve(&old_grid, row, col, 1);  
+      if (!is_fixed.get(row, col)) {
+        new_grid.evolve(&old_grid, row, col, 1);  
+      }
     }
   }
-
-/*
-  // The voltage at each point is the average of the points around it.
-  for (int row = 1; row < (grid_rows - 1); row++) {
-    for (int col = 1; col < (grid_cols - 1); col++) {
-      v[row * grid_cols + col] = (1/4.0f) * 
-        (v[(row-1) * grid_cols + col] + v[(row+1) * grid_cols + col] + 
-         v[row * grid_cols + (col-1)] + v[row * grid_cols + (col+1)]);
+  
+  std::ofstream output_funtimes("potential.dat");
+  for (int row = 0; row < grid_rows; row++) {
+    for (int col = 0; col < grid_cols; col++) {
+      output_funtimes << new_grid.get(row, col) << " ";
     }
+    output_funtimes << "\n";
   }
-*/
 
   // This is a general formula for calculating the relaxation factor for rectangular grids.
   // NOTE: IT PRODUCES A MORE ACCURATE VALUE (1.93909...) BUT IT SEEMS THAT THIS VALUE INCREASES THE NUMBER OF ITERATIONS. 

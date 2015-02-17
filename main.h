@@ -56,7 +56,7 @@ public:
     float value;
     
     // Top row
-    if (y == 0) {
+    /*if (y == 0) {
       value = (1 - relaxation) * old->get(x,y) + (relaxation / 4) *
         old->get(x, (y+1)) + this->get((x-1), y) + old->get((x+1), y);
     
@@ -96,12 +96,12 @@ public:
         this->get(x, (y-1)) + old->get((x+1), y);
     
     // Default
-    } else {
+    } else {*/
       value = (1 - relaxation) * old->get(x,y) + (relaxation / 4) *
-        old->get(x, (y+1)) + this->get(x, (y-1)) + old->get((x+1), y) + this->get((x-1), y);
-    }
+        (this->get(y-1,x) + old->get(y+1,x) + this->get(y,x-1) + old->get(y,x+1));
+    //}
     
-    this->set(x, y, value);
+    this->set(y, x, value);
   }
 };
 #endif

@@ -46,8 +46,6 @@ int main(int argc, char *argv[]) {
   // Find which points are fixed and set them to 1 in the fixed grid,
   // and get the inital values of those fixed points and put them in the
   //  old_grid.
-  
-  // I've tested this thoroughly and it's all good
   parse(initial_condition_file, &is_fixed, &new_grid);
   equate_matrix(&old_grid, &new_grid);
   
@@ -55,7 +53,7 @@ int main(int argc, char *argv[]) {
   for (int row = 0; row < grid_rows; row++) {
     for (int col = 0; col < grid_cols; col++) {
       if (!is_fixed.get(row, col)) {
-        new_grid.evolve(&old_grid, row, col, 1);  
+        new_grid.evolve(&old_grid, &is_fixed, row, col, 1);  
       }
     }
   }
@@ -74,7 +72,7 @@ int main(int argc, char *argv[]) {
   //float relax = 4.0f/(2 + sqrt(4 - (cos(PI/(grid_rows-1)) + cos(PI/(grid_cols-1))) * (cos(PI/(grid_rows-1)) + cos(PI/(grid_cols-1)))));
   // THE MOST EFFICIENT VALUE I HAVE FOUND BY TRIAL AND ERROR.
   float relaxation = 1.9f;
-  const int max_iterate = 1;
+  const int max_iterate = 10000;
 
   for (int iter = 0; iter < max_iterate; iter++) {
     for (int row = 0; row < grid_rows; row++) {
@@ -84,7 +82,7 @@ int main(int argc, char *argv[]) {
           // Find the value of this point in the new grid by SOR
           
           // NOTE(david): This is probably where everything goes wrong
-          new_grid.evolve(&old_grid, row, col, relaxation);
+          new_grid.evolve(&old_grid, &is_fixed, row, col, relaxation);
         }
       }
     }
@@ -92,7 +90,7 @@ int main(int argc, char *argv[]) {
     // Check the difference between the elements of the new and the previous matrix. 
     // Act appropriately in case of different errors    
     float err_bound = pow(10, -3);
-
+/*
     // If the new voltage array is close enough to the old one then we stop.
     if (error_check(&old_grid, &new_grid, err_bound)) {
       std::cout << "The accuracy achieved after " << iter << "th iteration" << "\n";
@@ -106,7 +104,8 @@ int main(int argc, char *argv[]) {
       // Set the old matrix equal to the new one ready to go again
       equate_matrix(&old_grid, &new_grid);
     }
-    
+*/
+    equate_matrix(&old_grid, &new_grid);    
     // The end of the solution
   }
 

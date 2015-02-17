@@ -10,10 +10,11 @@
 // Grid is a basic class containing a grid of points
 class Grid {
 public:
-  std::vector<float> voltages;
+  std::vector<float> voltages;  
   int rows;
   int cols;
   float spacing;
+  
 
   // Constructor
   Grid(int grid_rows, int grid_cols) {
@@ -50,13 +51,54 @@ public:
   //
   // We need the old grid to find the new grid point, and the relaxation factor too.
   // LAURYNAS: VERSION OF EVOLVE WHICH SEEMS TO WORK
-  void evolve(Grid *old, Grid *is_fixed, int row, int col, float relaxation) {
+  
+  
+  /*void evolve(Grid *old, int row, int col, float relaxation) {
     // There's no need to do this because we already do it in the main loop
     if (is_fixed->get(row, col)) {
       return;
     }
-    // Top left corner
-    else if (row == 0 && col == 0) {
+    float value;
+    
+    // Top left and top right corner
+    if (row == 0 && (col == 0 || col == (cols-1))) {
+      value = old->get(row+1, col);
+    }
+
+    // Bottom left and bottom right corner
+    else if (row == (rows-1) && (col == 0 || col == (cols-1))) {
+      value = old->get(row-1, col);
+    }
+    
+    // Top row
+    else if (row == 0) {
+      value = old->get(row+1, col);
+    }
+    // Bottom row
+    else if (row == (rows-1)) {
+      value = old->get(row-1, col);
+    }
+    
+    // Left side
+    else if (col == 0) {
+      value = old->get(row, col+1);
+    }
+    // Right side
+    else if (col == (cols-1)) {
+      value = old->get(row, col-1);
+    }
+    
+    else {
+      value = (1 - relaxation) * old->get(row,col) + (relaxation / 4.0) * 
+        (old->get(row, (col+1)) + this->get(row, (col-1)) + this->get((row-1), col) + old->get((row+1), col));
+    }
+    
+    this->set(row, col, value);
+  }*/
+  
+  // Top left corner
+  void evolve(Grid *old, Grid *is_fixed, int row, int col, float relaxation) {
+    if (row == 0 && col == 0) {
       this->voltages[row * cols + col] = old->voltages[(row+1) * cols + col];
     }
     // Top right corner
@@ -91,12 +133,11 @@ public:
     }
     // Right side
     else if (col == (cols-1)) {
-      this->voltages[row * cols + col] = old->voltages[row * cols + (col-1)];
+     this->voltages[row * cols + col] = old->voltages[row * cols + (col-1)];
     }
     else {
       this->voltages[row * cols + col] = (1 - relaxation) * old->get(row,col) + ( relaxation / 4.0) * (old->get(row, (col+1)) + this->get(row, (col-1)) + this->get((row-1), col) + old->get((row+1), col));
     }
   }
-  
 };
 #endif

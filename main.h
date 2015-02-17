@@ -57,41 +57,43 @@ public:
     
     // Top right corner
     if (row == 0 && col == (cols-1)) {
-      this->voltages[row * cols + col] = old->voltages[(row+1) * cols + col];
+      value = old->voltages[(row+1) * cols + col];
     }
     // Bottom left corner
     else if (row == (rows-1) && col == 0) {
-      this->voltages[row * cols + col] = old->voltages[(row-1) * cols + col];
+      value = old->voltages[(row-1) * cols + col];
     }
     // Bottom right corner
     else if (row == (rows-1) && col == (cols-1)) {
-      this->voltages[row * cols + col] = old->voltages[(row-1) * cols + col];
+      value = old->voltages[(row-1) * cols + col];
     }
     // Top row
     else if (row == 0) {
-      this->voltages[row * cols + col] = old->voltages[(row+1) * cols + col];
+      value = old->voltages[(row+1) * cols + col];
     }
     else if (row == 0) {
-      this->voltages[row * cols + col] = old->voltages[(row+1) * cols + col];
+      value = old->voltages[(row+1) * cols + col];
     }
     // Bottom row
     else if (row == (rows-1)) {
-      this->voltages[row * cols + col] = old->voltages[(row-1) * cols + col];
+      value = old->voltages[(row-1) * cols + col];
     }
     else if (row == (rows-1)) {
       this->voltages[row * cols + col] = old->voltages[(row-1) * cols + col];
     }
     // Left side
     else if (col == 0) {
-      this->voltages[row * cols + col] = old->voltages[row * cols + (col+1)];
+      value = old->voltages[row * cols + (col+1)];
     }
     // Right side
     else if (col == (cols-1)) {
-     this->voltages[row * cols + col] = old->voltages[row * cols + (col-1)];
+     value = old->voltages[row * cols + (col-1)];
     }
     else {
-      this->voltages[row * cols + col] = (1 - relaxation) * old->get(row,col) + ( relaxation / 4.0) * (old->get(row, (col+1)) + this->get(row, (col-1)) + this->get((row-1), col) + old->get((row+1), col));
+      value = (1 - relaxation) * old->get(row,col) + ( relaxation / 4.0) * (old->get(row, (col+1)) + this->get(row, (col-1)) + this->get((row-1), col) + old->get((row+1), col));
     }
+    
+    this->set(row, col, value);
   }
 
 /* 

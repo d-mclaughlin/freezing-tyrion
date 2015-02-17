@@ -8,10 +8,10 @@ int main(int argc, char *argv[]) {
   system("ps ux |grep main.exe | grep -o '[0-9]*' | head -1 > PID.dat");
 
   //This gets the start time of the program
-  system("echo $(date +%s.%N) > time_Start.dat");
+  system("echo $(date +%s.%N) > time_start.dat");
 
 //This is used to extract the cpu usage data a the begining of the process
-  system("head -1 /proc/stat | grep -o '[0-9]*' > CPUStart.dat");
+  system("head -1 /proc/stat | grep -o '[0-9]*' > cpu_start.dat");
 
   //Putting the value of the ram usage at the start of he pogram ino the file
   system("./ram.sh PID.dat >> memory.dat");
@@ -119,10 +119,10 @@ int main(int argc, char *argv[]) {
 
 
   //Similarly as before this is used to extract the cpu data at the end of the program
-  system("head -1 /proc/stat | grep -o '[0-9]*' > CPUEnd.dat");
+  system("head -1 /proc/stat | grep -o '[0-9]*' > cpu_end.dat");
 
  //This gets the end time of the program
-  system("echo $(date +%s.%N) > time_End.dat");
+  system("echo $(date +%s.%N) > time_end.dat");
   
  //Putting the value of the ram usage at the end of he pogram ino the file
   system("./ram.sh PID.dat >> memory.dat");

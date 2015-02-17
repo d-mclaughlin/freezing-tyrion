@@ -25,7 +25,7 @@ echo "Running..."
 echo "Done!"
 
 # Clean up the directory
-rm -f cpu_start.dat cpu_end.dat time_start.dat time_end.dat
+rm -f cpu_start.dat cpu_end.dat time_start.dat time_end.dat memory.dat
 rm -f main.exe
 
 echo "Plotting..."

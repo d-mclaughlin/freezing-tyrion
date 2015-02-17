@@ -83,6 +83,7 @@ int main(int argc, char *argv[]) {
           
           // NOTE(david): This is probably where everything goes wrong
           new_grid.evolve(&old_grid, row, col, relaxation);
+        }
       }
     }
 

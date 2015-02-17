@@ -82,7 +82,6 @@ public:
      
     // Bottom right corner
     } else if (x == (cols - 1) && y == (rows - 1)) {
-      std::cout << "hello\n";
       value = (1 - relaxation) * old->get(x,y) + (relaxation / 4) *
          this->get(x, (y-1)) + this->get((x-1), y);
     

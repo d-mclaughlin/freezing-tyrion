@@ -63,7 +63,9 @@ void parse(char *filename, Grid *is_fixed, Grid *grid) {
 
       int i = 0;
       while (linestream.good() && i < 4) {
+        // Take the next coordinate from the line
         linestream >> coord;
+        // Convert it to float and put it in the coords array
         coords[i] = std::stof(coord);
         i++;
       }
@@ -92,7 +94,9 @@ void parse(char *filename, Grid *is_fixed, Grid *grid) {
 
       int i = 0;
       while (linestream.good() && i < 3) {
+        // Take the next coordinate from the line
         linestream >> coord;
+        // Convert it to float and put it in the coords array
         coords[i] = std::stof(coord);
         i++;
       }
@@ -127,7 +131,9 @@ void parse(char *filename, Grid *is_fixed, Grid *grid) {
 
       int i = 0;
       while (linestream.good() && i < 3) {
+        // Take the next coordinate from the line
         linestream >> coord;
+        // Convert it to float and put it in the coords array
         coords[i] = std::stof(coord);
         i++;
       }

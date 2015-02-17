@@ -2,8 +2,6 @@
 #include "functions.h"
 
 int main(int argc, char *argv[]) {
-
-
   //This gets the process ID number
   system("ps ux |grep main.exe | grep -o '[0-9]*' | head -1 > PID.dat");
 
@@ -33,72 +31,35 @@ int main(int argc, char *argv[]) {
   // Find which points are fixed and set them to 1 in the fixed grid,
   // and get the inital values of those fixed points and put them in the
   //  old_grid.
-  parse(initial_condition_file, &is_fixed, &new_grid);
-  equate_matrix(&old_grid, &new_grid);
+  parse(initial_condition_file, &is_fixed, &old_grid);
+
+  new_grid.equate_array(&old_grid);
+ 
+  /*******************************************
+   * Successive over/under relaxation method *
+   *******************************************/
+
+  float error_tol = pow(10, -3);
   
-  // Solve the system for a capacitor. In this case the 'relaxation factor' is 1
-  for (int row = 0; row < grid_rows; row++) {
-    for (int col = 0; col < grid_cols; col++) {
-      if (!is_fixed.get(row, col)) {
-        new_grid.evolve(&old_grid, row, col, 1);  
-      }
-    }
-  }
-  
-  // Output what the grid looks like after the initial set up. Looks fine to me!
-  std::ofstream output_funtimes("potential.dat");
-  for (int row = 0; row < grid_rows; row++) {
-    for (int col = 0; col < grid_cols; col++) {
-      output_funtimes << new_grid.get(row, col) << " ";
-
-    }
-    output_funtimes << "\n";
-  }
-
-  // This is a general formula for calculating the relaxation factor for rectangular grids.
-  // NOTE: IT PRODUCES A MORE ACCURATE VALUE (1.93909...) BUT IT SEEMS THAT THIS VALUE INCREASES THE NUMBER OF ITERATIONS. 
-  //float relax = 4.0f/(2 + sqrt(4 - (cos(PI/(grid_rows-1)) + cos(PI/(grid_cols-1))) * (cos(PI/(grid_rows-1)) + cos(PI/(grid_cols-1)))));
-
-  // THE MOST EFFICIENT VALUE I HAVE FOUND BY TRIAL AND ERROR.
-  float relaxation = 1.9f;
-  const int max_iterate = 10000;
-
-  for (int iter = 0; iter < max_iterate; iter++) {
+  for (int iter = 0; iter < 50000; iter++) {
     for (int row = 0; row < grid_rows; row++) {
-      for (int col = 0; col < grid_rows; col++) {
-        // If the value of the fixed grid is zero, i.e. that value is not fixed:
-        if (!is_fixed.get(row, col)) {
-          // Find the value of this point in the new grid by SOR
-          
-          // NOTE(david): This is probably where everything goes wrong
-          new_grid.evolve(&old_grid, row, col, relaxation);
-        }
+      for (int col = 0; col < grid_cols; col++) {
+	      // If this point on the grid is not fixed, ie is_fixed == 0
+	      if (!is_fixed.get(row, col)) {
+	        new_grid.evolve(&old_grid, row, col, 1.9);
+	      }
       }
     }
 
-    // Check the difference between the elements of the new and the previous matrix. 
-    // Act appropriately in case of different errors    
-    float err_bound = pow(10, -3);
-/*
-    // If the new voltage array is close enough to the old one then we stop.
-    if (error_check(&old_grid, &new_grid, err_bound)) {
-      std::cout << "The accuracy achieved after " << iter << "th iteration" << "\n";
+    float error = new_grid.absolute_error(&old_grid);
+    if (error <= error_tol) {
+      std::cout << "Accuracy achieved after " << iter << "th iteration\n";
+      std::cout << "Absolute error is " << error << std::endl;
       break;
+    } else { 
+      old_grid.equate_array(&new_grid);
     }
-    else if (err > err_bound && k == max_iterate) {
-      cout << "Not enough iterations to achieve the required accuracy." << endl;
-      cout << err << endl;
-    }
-    else {
-      // Renew the values of the array v by equating it to the array new_v
-      equate_matrix(v, new_v, grid_rows, grid_cols);
-    }
-*/
-    equate_matrix(&old_grid, &new_grid);    
-    // The end of the solution
   }
-    
-  // Produce a file and store the solution in a form of an array/matrix
 
   print_grid_to_file("potential_matrix.dat", &new_grid, 0);
 
@@ -120,8 +81,9 @@ int main(int argc, char *argv[]) {
 
   //This calculates he pecentage of CPU used by the program.
   cpu_calc();
-
-
-
+  
+  // This calculates the pecentage of CPU used by the program.
+  cpu_calc();
+  
   return 0;
 }

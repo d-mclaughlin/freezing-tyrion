@@ -93,50 +93,31 @@ public:
     this->set(row, col, value);
   }
 
-/* 
-  // Top left corner
-  void evolve(Grid *old, Grid *is_fixed, int row, int col, float relaxation) {
-    if (row == 0 && col == 0) {
-      this->voltages[row * cols + col] = old->voltages[(row+1) * cols + col];
-    }
-    // Top right corner
-    else if (row == 0 && col == (cols-1)) {
-      this->voltages[row * cols + col] = old->voltages[(row+1) * cols + col];
-    }
-    // Bottom left corner
-    else if (row == (rows-1) && col == 0) {
-      this->voltages[row * cols + col] = old->voltages[(row-1) * cols + col];
-    }
-    // Bottom right corner
-    else if (row == (rows-1) && col == (cols-1)) {
-      this->voltages[row * cols + col] = old->voltages[(row-1) * cols + col];
-    }
-    // Top row
-    else if (row == 0) {
-      this->voltages[row * cols + col] = old->voltages[(row+1) * cols + col];
-    }
-    else if (row == 0) {
-      this->voltages[row * cols + col] = old->voltages[(row+1) * cols + col];
-    }
-    // Bottom row
-    else if (row == (rows-1)) {
-      this->voltages[row * cols + col] = old->voltages[(row-1) * cols + col];
-    }
-    else if (row == (rows-1)) {
-      this->voltages[row * cols + col] = old->voltages[(row-1) * cols + col];
-    }
-    // Left side
-    else if (col == 0) {
-      this->voltages[row * cols + col] = old->voltages[row * cols + (col+1)];
-    }
-    // Right side
-    else if (col == (cols-1)) {
-     this->voltages[row * cols + col] = old->voltages[row * cols + (col-1)];
-    }
-    else {
-      this->voltages[row * cols + col] = (1 - relaxation) * old->get(row,col) + ( relaxation / 4.0) * (old->get(row, (col+1)) + this->get(row, (col-1)) + this->get((row-1), col) + old->get((row+1), col));
+  // This is a prime example of something that should be an overloaded = operator
+  // Wouldn't be any job to do but I cba right now.
+  void equate_array(Grid *new_grid) {
+    for (int row = 0; row < rows; row++) {
+      for (int col = 0; col < cols; col++) {
+	      this->set(row, col, new_grid->get(row,col));
+      }
     }
   }
-*/
+  
+  float absolute_error(Grid *old) {
+    float difference, max = 0.0f;
+    
+    for (int row = 0; row < rows; row++) {
+      for (int col = 0; col < cols; col++) {
+	      difference = fabs(this->get(row, col) - old->get(row, col));
+	      
+	      if (difference > max) {
+	        max = difference;
+	      }
+      }
+    }
+
+    return max;
+  }
+
 };
 #endif

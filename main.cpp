@@ -46,7 +46,65 @@ int main(int argc, char *argv[]) {
   // Find which points are fixed and set them to 1 in the fixed grid,
   // and get the inital values of those fixed points and put them in the
   //  old_grid.
-  parse(initial_condition_file, &is_fixed, &new_grid);
+  parse(initial_condition_file, &is_fixed, &old_grid);
+
+  new_grid.EquateArray(&old_grid);
+ 
+  /*******************************************
+   * Successive over/under relaxation method *
+   *******************************************/
+
+  float error_tol = pow(10, -3);
+  
+  for (int k=0; k<50000; k++) {
+    for (int row=0; row < grid_rows; row++) {
+      for (int col=0; col < grid_cols; col++) {
+	if (is_fixed.voltages[row * grid_cols + col] == 1) {
+	  continue;
+	}
+	else {
+	  new_grid.evolve(&old_grid, row, col, 1.9);
+	}
+      }
+    }
+
+    float error = new_grid.AbsoluteError(&old_grid);
+    if (error <= error_tol) {
+      std::cout << "Accuracy achieved after " << k << "th iteration\n";
+      std::cout << "Absolute error is " << error << std::endl;
+      break;
+    }
+    else { 
+      old_grid.EquateArray(&new_grid);
+    }
+  }
+
+  std::ofstream output ("potential_matrix.dat");
+  //std::ofstream fixedoutput ("fixed.dat");
+  
+  for (int row = 0; row < grid_rows; row++) {
+    for (int col = 0; col < grid_cols; col++) {
+      output << new_grid.voltages[row * grid_cols + col] << " ";
+      // fixedoutput << is_fixed.voltages[row * grid_cols + col] << " ";
+    }
+    output << "\n";
+    // fixedoutput << "\n";
+  }
+
+  // Similarly as before this is used to extract the cpu and time data at the end of the program
+  system("./cpu.sh > cpu_end.dat");
+  system("./time.sh > time_end.dat");
+  
+  // This calculates the pecentage of CPU used by the program.
+  cpu_calc();
+  
+  return 0;
+}
+
+  /***********************************************************
+   ********************** OLD VERSION ************************
+   ***********************************************************/
+  /*
   equate_matrix(&old_grid, &new_grid);
   
   // Solve the system for a capacitor. In this case the 'relaxation factor' is 1
@@ -86,11 +144,11 @@ int main(int argc, char *argv[]) {
         }
       }
     }
-
+  
     // Check the difference between the elements of the new and the previous matrix. 
     // Act appropriately in case of different errors    
     float err_bound = pow(10, -3);
-/*
+
     // If the new voltage array is close enough to the old one then we stop.
     if (error_check(&old_grid, &new_grid, err_bound)) {
       std::cout << "The accuracy achieved after " << iter << "th iteration" << "\n";
@@ -104,7 +162,7 @@ int main(int argc, char *argv[]) {
       // Set the old matrix equal to the new one ready to go again
       equate_matrix(&old_grid, &new_grid);
     }
-*/
+
     equate_matrix(&old_grid, &new_grid);    
     // The end of the solution
   }
@@ -127,3 +185,4 @@ int main(int argc, char *argv[]) {
 
   return 0;
 }
+*/

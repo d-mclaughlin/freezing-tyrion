@@ -53,8 +53,12 @@ public:
   
   
   void evolve(Grid *old, int row, int col, float relaxation) {
-    float value;
-    
+    // float value;
+
+    // Top left corner    
+    if (row == 0 && col == 0) {
+      this->voltages[row * cols + col] = old->voltages[(row+1) * cols + col];
+    }
     // Top right corner
     if (row == 0 && col == (cols-1)) {
       this->voltages[row * cols + col] = old->voltages[(row+1) * cols + col];
@@ -71,13 +75,7 @@ public:
     else if (row == 0) {
       this->voltages[row * cols + col] = old->voltages[(row+1) * cols + col];
     }
-    else if (row == 0) {
-      this->voltages[row * cols + col] = old->voltages[(row+1) * cols + col];
-    }
     // Bottom row
-    else if (row == (rows-1)) {
-      this->voltages[row * cols + col] = old->voltages[(row-1) * cols + col];
-    }
     else if (row == (rows-1)) {
       this->voltages[row * cols + col] = old->voltages[(row-1) * cols + col];
     }
@@ -94,50 +92,28 @@ public:
     }
   }
 
-/* 
-  // Top left corner
-  void evolve(Grid *old, Grid *is_fixed, int row, int col, float relaxation) {
-    if (row == 0 && col == 0) {
-      this->voltages[row * cols + col] = old->voltages[(row+1) * cols + col];
-    }
-    // Top right corner
-    else if (row == 0 && col == (cols-1)) {
-      this->voltages[row * cols + col] = old->voltages[(row+1) * cols + col];
-    }
-    // Bottom left corner
-    else if (row == (rows-1) && col == 0) {
-      this->voltages[row * cols + col] = old->voltages[(row-1) * cols + col];
-    }
-    // Bottom right corner
-    else if (row == (rows-1) && col == (cols-1)) {
-      this->voltages[row * cols + col] = old->voltages[(row-1) * cols + col];
-    }
-    // Top row
-    else if (row == 0) {
-      this->voltages[row * cols + col] = old->voltages[(row+1) * cols + col];
-    }
-    else if (row == 0) {
-      this->voltages[row * cols + col] = old->voltages[(row+1) * cols + col];
-    }
-    // Bottom row
-    else if (row == (rows-1)) {
-      this->voltages[row * cols + col] = old->voltages[(row-1) * cols + col];
-    }
-    else if (row == (rows-1)) {
-      this->voltages[row * cols + col] = old->voltages[(row-1) * cols + col];
-    }
-    // Left side
-    else if (col == 0) {
-      this->voltages[row * cols + col] = old->voltages[row * cols + (col+1)];
-    }
-    // Right side
-    else if (col == (cols-1)) {
-     this->voltages[row * cols + col] = old->voltages[row * cols + (col-1)];
-    }
-    else {
-      this->voltages[row * cols + col] = (1 - relaxation) * old->get(row,col) + ( relaxation / 4.0) * (old->get(row, (col+1)) + this->get(row, (col-1)) + this->get((row-1), col) + old->get((row+1), col));
+ 
+  void EquateArray(Grid *new_grid) {
+    for (int row=0; row < rows; row++) {
+      for (int col=0; col < cols; col++) {
+	this->voltages[row * cols + col] = new_grid->get(row,col);
+      }
     }
   }
-*/
+  
+  float AbsoluteError(Grid *old) {
+    float difference, max=0.0f;
+    for (int row=0; row < rows; row++) {
+      for (int col=0; col < cols; col++) {
+	difference = fabs(this->voltages[row * cols + col] - old->voltages[row * cols + col]);
+	if (difference > max) {
+	  max = difference;
+	}
+      }
+    }
+
+    return max;
+  }
+
 };
 #endif

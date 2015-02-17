@@ -32,9 +32,7 @@ public:
   }
 
   // Destructor
-  ~Grid() {
-    delete this;
-  }
+  ~Grid() {;}
 
   // Get the value of the grid at a given point
   float get(int row, int col) {
@@ -46,13 +44,65 @@ public:
     this->voltages[row * cols + col] = value;
   }
   
-  // Evolve takes a given point on the grid and transforms it into the average of the 4 points around it
+  // Evolve takes a given point on the grid and transforms it into the average of the 2 points
+  //  from the old grid that are underneath and to the left, and the 2 points from the new grid
+  //  that are on top of and to the right, since we've already calculated those.
+  //
   // We need the old grid to find the new grid point, and the relaxation factor too.
-  void evolve(Grid *old, int x, int y, float relaxation) {
+  //  x and y are reversed because row is the vertical direction and col is the horizontal direction
+  void evolve(Grid *old, int y, int x, float relaxation) {
     // This relies on there being 4 points surrounding this point, which is not always the case
     //  TODO(david): Edge and corner cases
-    this->set(x, y, (1 - relaxation) * old->get(x,y) + (relaxation / 4) *
-      old->get(x, (y+1)) + old->get(x, (y-1)) + old->get((x-1), y) + old->get((x-1), y));
+    float value;
+    
+    // Top row
+    if (y == 0) {
+      value = (1 - relaxation) * old->get(x,y) + (relaxation / 4) *
+        old->get(x, (y+1)) + this->get((x-1), y) + old->get((x+1), y);
+    
+    // Bottom row
+    } else if (y == (rows - 1)) {
+      value = (1 - relaxation) * old->get(x,y) + (relaxation / 4) *
+        this->get(x, (y-1)) + this->get((x-1), y) + old->get((x+1), y);
+    
+    // Left column
+    } else if (x == 0) {
+      value = (1 - relaxation) * old->get(x,y) + (relaxation / 4) *
+        old->get(x, (y+1)) + this->get(x, (y-1)) + old->get((x+1), y);
+    
+    // Right column
+    } else if (x == (cols - 1)) {
+      value = (1 - relaxation) * old->get(x,y) + (relaxation / 4) *
+        old->get(x, (y+1)) + this->get(x, (y-1)) + old->get((x+1), y);
+    
+    // Top left corner
+    } else if (x == 0 && y == 0) {
+      value = (1 - relaxation) * old->get(x,y) + (relaxation / 4) *
+        old->get(x, (y+1)) + old->get((x+1), y);
+     
+    // Bottom right corner
+    } else if (x == (cols - 1) && y == (rows - 1)) {
+      std::cout << "hello\n";
+      value = (1 - relaxation) * old->get(x,y) + (relaxation / 4) *
+         this->get(x, (y-1)) + this->get((x-1), y);
+    
+    // Top right corner
+    } else if (x == (cols - 1) && y == 0) {
+      value = (1 - relaxation) * old->get(x,y) + (relaxation / 4) *
+        old->get(x, (y+1)) + this->get((x-1), y);
+    
+    // Bottom left corner
+    } else if (x == 0 && y == (rows - 1)) {
+      value = (1 - relaxation) * old->get(x,y) + (relaxation / 4) *
+        this->get(x, (y-1)) + old->get((x+1), y);
+    
+    // Default
+    } else {
+      value = (1 - relaxation) * old->get(x,y) + (relaxation / 4) *
+        old->get(x, (y+1)) + this->get(x, (y-1)) + old->get((x+1), y) + this->get((x-1), y);
+    }
+    
+    this->set(x, y, value);
   }
 };
 #endif

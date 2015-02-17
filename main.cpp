@@ -72,17 +72,17 @@ int main(int argc, char *argv[]) {
   //float relax = 4.0f/(2 + sqrt(4 - (cos(PI/(grid_rows-1)) + cos(PI/(grid_cols-1))) * (cos(PI/(grid_rows-1)) + cos(PI/(grid_cols-1)))));
   // THE MOST EFFICIENT VALUE I HAVE FOUND BY TRIAL AND ERROR.
   float relaxation = 1.9f;
-  const int max_iterate = 100000;
+  const int max_iterate = 1;
 
   for (int iter = 0; iter < max_iterate; iter++) {
     for (int row = 0; row < grid_rows; row++) {
       for (int col = 0; col < grid_rows; col++) {
         // If the value of the fixed grid is zero, i.e. that value is not fixed:
         if (!is_fixed.get(row, col)) {
-          // The value in the new grid is the average of the 4 points surrounding
-          //  it in the old grid.
+          // Find the value of this point in the new grid by SOR
+          
+          // NOTE(david): This is probably where everything goes wrong
           new_grid.evolve(&old_grid, row, col, relaxation);
-        }
       }
     }
 

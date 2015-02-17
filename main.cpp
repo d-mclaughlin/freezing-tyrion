@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
   //  old_grid.
   parse(initial_condition_file, &is_fixed, &old_grid);
 
-  new_grid = &old_grid;
+  new_grid = old_grid;
  
   /*******************************************
    * Successive over/under relaxation method *
@@ -56,8 +56,9 @@ int main(int argc, char *argv[]) {
       std::cout << "Accuracy achieved after " << iter << "th iteration\n";
       std::cout << "Absolute error is " << error << std::endl;
       break;
-    } else { 
-      old_grid = &new_grid;
+    } else {
+      // This is a pretty slow operation, if you're trying to optimise this code
+      old_grid = new_grid;
     }
   }
 

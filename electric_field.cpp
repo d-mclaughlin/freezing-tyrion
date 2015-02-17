@@ -6,18 +6,11 @@ void electric_field(Grid *grid) {
   // Define 1D arrays simulating 2D arrays to store values of electric field
   // We don't want to make these instances of grid; on function exit we're deallocating
   //  a /lot/ of memory -- it causes a segfault.
+  //                       ^^^^^^^^^ because of a memory leak which i don't know how to fix
   float Ex[(grid->rows) * (grid->cols)];
   float Ey[(grid->rows) * (grid->cols)];
   float Ex_prime[(grid->rows) * (grid->cols)];
   float Ey_prime[(grid->rows) * (grid->cols)];
-
-/*
-  // I made them instances of Grid...
-  Grid Ex((grid->rows), (grid->cols));
-  Grid Ey((grid->rows), (grid->cols));
-  Grid Ex_prime((grid->rows), (grid->cols));
-  Grid Ey_prime((grid->rows), (grid->cols));
-*/
 
   // Find the x- and y-components of the electric field by dividing the difference between the adjacent potentials by the grid spacing
   for (int row = 0; row < grid->rows; row++) {
@@ -50,7 +43,7 @@ void electric_field(Grid *grid) {
       // NOTE(Laurynas): Swapped row and col in the first two outputs --
       //  current plot seems correct.
       //  I tend to think that col refers to x-axis and row to y-axis
-      output << col << " " << row << " " << x/norm_vector << " " << y/norm_vector << "\n";
+      output << col << " " << row << " " << x/norm_vector << " " << y/norm_vector << " ";
     }
     output << "\n";
   }

@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
   for (int row = 0; row < grid_rows; row++) {
     for (int col = 0; col < grid_cols; col++) {
       if (!is_fixed.get(row, col)) {
-        new_grid.evolve(&old_grid, &is_fixed, row, col, 1);  
+        new_grid.evolve(&old_grid, row, col, 1);  
       }
     }
   }
@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
           // Find the value of this point in the new grid by SOR
           
           // NOTE(david): This is probably where everything goes wrong
-          new_grid.evolve(&old_grid, &is_fixed, row, col, relaxation);
+          new_grid.evolve(&old_grid, row, col, relaxation);
         }
       }
     }

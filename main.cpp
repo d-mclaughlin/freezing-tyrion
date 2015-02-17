@@ -60,6 +60,7 @@ int main(int argc, char *argv[]) {
     }
   }
   
+  // Output what the grid looks like after the initial set up. Looks fine to me!
   std::ofstream output_funtimes("potential.dat");
   for (int row = 0; row < grid_rows; row++) {
     for (int col = 0; col < grid_cols; col++) {
@@ -110,10 +111,10 @@ int main(int argc, char *argv[]) {
   }
 
   // Produce a file and store the solution in a form of an array/matrix
-  fprint_matrix(&new_grid);
+  print_grid_to_file("potential_matrix.dat", &new_grid, 0);
 
   // Print out the potential values as well as the coordinates: x, y, v(x,y);
-  data_equipotential(&new_grid);
+  print_grid_to_file("equipotential.dat", &new_grid, 1);
   
   // Find the electric field and produce an appropriate data file
   electric_field(&new_grid);

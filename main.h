@@ -95,10 +95,10 @@ public:
 
   // This is a prime example of something that should be an overloaded = operator
   // Wouldn't be any job to do but I cba right now.
-  void equate_array(Grid *new_grid) {
+  void operator=(Grid *rhs) {
     for (int row = 0; row < rows; row++) {
       for (int col = 0; col < cols; col++) {
-	      this->set(row, col, new_grid->get(row,col));
+	      this->set(row, col, rhs->get(row,col));
       }
     }
   }

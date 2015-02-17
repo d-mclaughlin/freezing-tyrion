@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
   //  old_grid.
   parse(initial_condition_file, &is_fixed, &old_grid);
 
-  new_grid.equate_array(&old_grid);
+  new_grid = &old_grid;
  
   /*******************************************
    * Successive over/under relaxation method *
@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
       std::cout << "Absolute error is " << error << std::endl;
       break;
     } else { 
-      old_grid.equate_array(&new_grid);
+      old_grid = &new_grid;
     }
   }
 
@@ -66,7 +66,6 @@ int main(int argc, char *argv[]) {
   // Print out the potential values as well as the coordinates: x, y, v(x,y);
   print_grid_to_file("equipotential.dat", &new_grid, 1);
 
-  
   // Find the electric field and produce an appropriate data file
   electric_field(&new_grid);
 
@@ -79,10 +78,7 @@ int main(int argc, char *argv[]) {
  //Putting the value of the ram usage at the end of he pogram ino the file
   system("./ram.sh PID.dat >> memory.dat");
 
-  //This calculates he pecentage of CPU used by the program.
-  cpu_calc();
-  
-  // This calculates the pecentage of CPU used by the program.
+  //This calculates the pecentage of CPU used by the program.
   cpu_calc();
   
   return 0;

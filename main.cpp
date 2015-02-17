@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
   system("echo $(date +%s.%N) > time_Start.dat");
 
 //This is used to extract the cpu usage data a the begining of the process
-  system("head -1 /proc/stat | grep -o '[0-9]*' > CPUStart.dat");
+  system("head -1 /proc/stat | grep -o '[0-9]*' > cpu_start.dat");
 
   //Putting the value of the ram usage at the start of he pogram ino the file
   system("./ram.sh PID.dat >> memory.dat");
@@ -46,6 +46,7 @@ int main(int argc, char *argv[]) {
       if (!is_fixed.get(row, col)) {
         new_grid.evolve(&old_grid, row, col, 1);  
       }
+     
     }
   }
   
@@ -54,7 +55,7 @@ int main(int argc, char *argv[]) {
   for (int row = 0; row < grid_rows; row++) {
     for (int col = 0; col < grid_cols; col++) {
       output_funtimes << new_grid.get(row, col) << " ";
-
+     
     }
     output_funtimes << "\n";
   }
@@ -77,7 +78,10 @@ int main(int argc, char *argv[]) {
           // NOTE(david): This is probably where everything goes wrong
           new_grid.evolve(&old_grid, row, col, relaxation);
         }
+
       }
+      if (iter % 10 == 0){
+      system("./ram.sh PID.dat >> memory.dat");}
     }
 
     // Check the difference between the elements of the new and the previous matrix. 
@@ -119,7 +123,7 @@ int main(int argc, char *argv[]) {
 
 
   //Similarly as before this is used to extract the cpu data at the end of the program
-  system("head -1 /proc/stat | grep -o '[0-9]*' > CPUEnd.dat");
+  system("head -1 /proc/stat | grep -o '[0-9]*' > cpu_end.dat");
 
  //This gets the end time of the program
   system("echo $(date +%s.%N) > time_End.dat");

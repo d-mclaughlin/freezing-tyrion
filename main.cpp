@@ -16,10 +16,6 @@ int main(int argc, char *argv[]) {
   //Putting the value of the ram usage at the start of he pogram ino the file
   system("./ram.sh PID.dat >> memory.dat");
 
-
-
-
-
   const int grid_rows = atoi(argv[1]);
   const int grid_cols = atoi(argv[2]);
   
@@ -112,11 +108,6 @@ int main(int argc, char *argv[]) {
   
   // Find the electric field and produce an appropriate data file
   electric_field(&new_grid);
-  
-
-
-
-
 
   //Similarly as before this is used to extract the cpu data at the end of the program
   system("head -1 /proc/stat | grep -o '[0-9]*' > cpu_end.dat");

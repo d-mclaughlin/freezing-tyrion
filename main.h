@@ -40,7 +40,7 @@ public:
   }
   
   // Set the value of the grid at a given point to a given value
-  void set(int row, int col, int value) {
+  void set(int row, int col, float value) {
     this->voltages[row * cols + col] = value;
   }
   
@@ -55,89 +55,69 @@ public:
   void evolve(Grid *old, int row, int col, float relaxation) {
     float value;
     
-    // Top right corner
-    if (row == 0 && col == (cols-1)) {
-      this->voltages[row * cols + col] = old->voltages[(row+1) * cols + col];
+    //Top left and top right corner
+    if ((row == 0 && col == 0) || (row == 0 && col == (cols-1))) {
+      value = old->get(row+1, col);
     }
-    // Bottom left corner
-    else if (row == (rows-1) && col == 0) {
-      this->voltages[row * cols + col] = old->voltages[(row-1) * cols + col];
+
+    // Bottom left and bottom right corner
+    else if ((row == (rows-1) && col == 0) || (row == (rows-1) && col == (cols-1))) {
+      value = old->get(row-1, col);
     }
-    // Bottom right corner
-    else if (row == (rows-1) && col == (cols-1)) {
-      this->voltages[row * cols + col] = old->voltages[(row-1) * cols + col];
-    }
+
     // Top row
     else if (row == 0) {
-      this->voltages[row * cols + col] = old->voltages[(row+1) * cols + col];
-    }
-    else if (row == 0) {
-      this->voltages[row * cols + col] = old->voltages[(row+1) * cols + col];
+      value = old->get(row+1, col);
     }
     // Bottom row
     else if (row == (rows-1)) {
-      this->voltages[row * cols + col] = old->voltages[(row-1) * cols + col];
+      value = old->get(row-1, col);
     }
-    else if (row == (rows-1)) {
-      this->voltages[row * cols + col] = old->voltages[(row-1) * cols + col];
-    }
+
     // Left side
     else if (col == 0) {
-      this->voltages[row * cols + col] = old->voltages[row * cols + (col+1)];
+      value = old->get(row, col+1);
     }
+    
     // Right side
     else if (col == (cols-1)) {
-     this->voltages[row * cols + col] = old->voltages[row * cols + (col-1)];
+     value = old->get(row, col-1);
     }
+    
+    // Default
     else {
-      this->voltages[row * cols + col] = (1 - relaxation) * old->get(row,col) + ( relaxation / 4.0) * (old->get(row, (col+1)) + this->get(row, (col-1)) + this->get((row-1), col) + old->get((row+1), col));
+      value = (1 - relaxation) * old->get(row,col) + ( relaxation / 4.0) * 
+        (old->get(row, (col+1)) + this->get(row, (col-1)) + this->get((row-1), col) + old->get((row+1), col));
     }
+    
+    this->set(row, col, value);
   }
 
-/* 
-  // Top left corner
-  void evolve(Grid *old, Grid *is_fixed, int row, int col, float relaxation) {
-    if (row == 0 && col == 0) {
-      this->voltages[row * cols + col] = old->voltages[(row+1) * cols + col];
-    }
-    // Top right corner
-    else if (row == 0 && col == (cols-1)) {
-      this->voltages[row * cols + col] = old->voltages[(row+1) * cols + col];
-    }
-    // Bottom left corner
-    else if (row == (rows-1) && col == 0) {
-      this->voltages[row * cols + col] = old->voltages[(row-1) * cols + col];
-    }
-    // Bottom right corner
-    else if (row == (rows-1) && col == (cols-1)) {
-      this->voltages[row * cols + col] = old->voltages[(row-1) * cols + col];
-    }
-    // Top row
-    else if (row == 0) {
-      this->voltages[row * cols + col] = old->voltages[(row+1) * cols + col];
-    }
-    else if (row == 0) {
-      this->voltages[row * cols + col] = old->voltages[(row+1) * cols + col];
-    }
-    // Bottom row
-    else if (row == (rows-1)) {
-      this->voltages[row * cols + col] = old->voltages[(row-1) * cols + col];
-    }
-    else if (row == (rows-1)) {
-      this->voltages[row * cols + col] = old->voltages[(row-1) * cols + col];
-    }
-    // Left side
-    else if (col == 0) {
-      this->voltages[row * cols + col] = old->voltages[row * cols + (col+1)];
-    }
-    // Right side
-    else if (col == (cols-1)) {
-     this->voltages[row * cols + col] = old->voltages[row * cols + (col-1)];
-    }
-    else {
-      this->voltages[row * cols + col] = (1 - relaxation) * old->get(row,col) + ( relaxation / 4.0) * (old->get(row, (col+1)) + this->get(row, (col-1)) + this->get((row-1), col) + old->get((row+1), col));
+  // This is a prime example of something that should be an overloaded = operator
+  // Wouldn't be any job to do but I cba right now.
+  void operator=(Grid *rhs) {
+    for (int row = 0; row < rows; row++) {
+      for (int col = 0; col < cols; col++) {
+	      this->set(row, col, rhs->get(row,col));
+      }
     }
   }
-*/
+  
+  float absolute_error(Grid *old) {
+    float difference, max = 0.0f;
+    
+    for (int row = 0; row < rows; row++) {
+      for (int col = 0; col < cols; col++) {
+	      difference = fabs(this->get(row, col) - old->get(row, col));
+	      
+	      if (difference > max) {
+	        max = difference;
+	      }
+      }
+    }
+
+    return max;
+  }
+
 };
 #endif

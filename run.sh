@@ -4,18 +4,19 @@
 #   the rest of the program
 set -e
 
-if [ "$#" -eq 3 ]; then
+
+if [ "$#" -eq 1 ]; then
+  # If there's only one arugment then that's the filename, and the 200x200 grid default
+  input_file="$1" 
+  rows=200
+  cols=200
+  
+elif [ "$#" -eq 3 ]; then
   # If you provide 3 arguments then you can change the size of the grid and the name
   #   of the file.
   input_file="$1"
   rows="$2"
   cols="$3"
-  
-elif [ "$#" -eq 1 ]; then
-  # If there's only one arugment then that's the filename, and the 200x200 grid default
-  input_file="$1" 
-  rows=200
-  cols=200
 
 else
   # If there are no arguments then default to a 200x200 grid with systemA.txt
@@ -36,9 +37,7 @@ res/main.exe "$rows" "$cols" "$input_file"
 echo "Done!"
 
 # Clean up the directory of all the dat files the program makes
-rm -f misc/cpu_start.dat misc/cpu_end.dat misc/time_start.dat misc/time_end.dat misc/memory.dat misc/PID.dat
-# Remove the main program as well
-rm -f res/main.exe
+rm -f misc/cpu_start.dat misc/cpu_end.dat misc/time_start.dat misc/time_end.dat # misc/memory.dat misc/PID.dat
 
 echo "Plotting..."
 gnuplot -e "rows="$rows"; cols="$cols"" misc/potential.plot
@@ -52,6 +51,6 @@ echo "Done!"
 rm -f misc/potential_matrix.dat misc/electric_field.dat misc/equipotential.dat
 
 # These get really annoying when testing a lot of stuff quickly so just uncomment as necessary
-gv res/potential.eps
-gv res/electric_field.eps
-gv res/equipotential.eps
+#gv res/potential.eps
+#gv res/electric_field.eps
+#gv res/equipotential.eps

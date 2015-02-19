@@ -2,7 +2,7 @@
 
 while read line
 do
-    name=$line
+  name=$line
 done < $1
 
 pmap $name | grep -o '[0-9]*'| tail -1

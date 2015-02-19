@@ -19,33 +19,39 @@ elif [ "$#" -eq 1 ]; then
 
 else
   # If there are no arguments then default to a 200x200 grid with systemA.txt
-  input_file="systemA.txt"
+  input_file="misc/systemA.txt"
   rows=200
   cols=200
 fi
 
+cd misc
 # I can't seem to get this line working with makefile so it's here for now
-g++ -c parser.cpp -std=c++0x -Wall -g
+g++ -c ../src/parser.cpp -std=c++0x -Wall -g
 make
 make clean
+cd ..
 
 echo "Running..."
-./main.exe "$rows" "$cols" "$input_file"
+res/main.exe "$rows" "$cols" "$input_file"
 echo "Done!"
 
-# Clean up the directory
-rm -f cpu_start.dat cpu_end.dat time_start.dat time_end.dat memory.dat PID.dat
-rm -f main.exe
+# Clean up the directory of all the dat files the program makes
+rm -f misc/cpu_start.dat misc/cpu_end.dat misc/time_start.dat misc/time_end.dat misc/memory.dat misc/PID.dat
+# Remove the main program as well
+rm -f res/main.exe
 
 echo "Plotting..."
-gnuplot -e "rows="$rows"; cols="$cols"" potential.plot
+gnuplot -e "rows="$rows"; cols="$cols"" misc/potential.plot
 
-gnuplot -e "rows="$rows"; cols="$cols"" electric_field.plot
+gnuplot -e "rows="$rows"; cols="$cols"" misc/electric_field.plot
 
-gnuplot -e "rows="$rows"; cols="$cols"" equipotential.plot
+gnuplot -e "rows="$rows"; cols="$cols"" misc/equipotential.plot
 echo "Done!"
 
+# Remove those dat files we no longer need
+rm -f misc/potential_matrix.dat misc/electric_field.dat misc/equipotential.dat
+
 # These get really annoying when testing a lot of stuff quickly so just uncomment as necessary
-gv potential.png
-gv electric_field.eps
-gv equipotential.eps
+gv res/potential.eps
+gv res/electric_field.eps
+gv res/equipotential.eps

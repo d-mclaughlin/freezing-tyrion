@@ -43,9 +43,8 @@ void electric_field(Grid *grid) {
       // NOTE(Laurynas): Swapped row and col in the first two outputs --
       //  current plot seems correct.
       //  I tend to think that col refers to x-axis and row to y-axis
-      output << col << " " << row << " " << x/norm_vector << " " << y/norm_vector << " ";
+      output << col << " " << row << " " << x/norm_vector << " " << y/norm_vector << "\n";
     }
-    output << "\n";
   }
   output.close();
 }

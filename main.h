@@ -8,6 +8,8 @@
 #include <vector>
 
 // Grid is a basic class containing a grid of points
+// We should probably take out the function definitions in here and only have
+//  declarations. A header file is no place for lengthy defintions.
 class Grid {
 public:
   std::vector<float> voltages;  

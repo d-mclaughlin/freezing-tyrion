@@ -60,22 +60,22 @@ gnuplot << EOF
 
   splot "potential_matrix.dat" matrix
 
-#  ###############################
-#  #     Electric field plot     #
-#  ###############################
+  ###############################
+  #     Electric field plot     #
+  ###############################
 
-#  set title "Electric Field of The Numerical Solution"
-#  set output "electric_field.eps"
-#  set style arrow 1
-#  set key off
-#  plot "electric_field.dat" using 1:2:3:4 with vectors lt 1
+  set title "Electric Field of The Numerical Solution"
+  set output "electric_field.eps"
+  set style arrow 1
+  set key off
+  plot "electric_field.dat" using 1:2:3:4 with vectors lt 1
 
-#  ###################################################################################
-#  #   The equipotential field plot is large enough to fit in its own file I think.  #
-#  #   The only problem is making that work with this.                               #
-#  #                                                                                 #
-#  #   Equipotentials plot                                                           #
-#  ###################################################################################
+  ###################################################################################
+  #   The equipotential field plot is large enough to fit in its own file I think.  #
+  #   The only problem is making that work with this.                               #
+  #                                                                                 #
+  #   Equipotentials plot                                                           #
+  ###################################################################################
 #  set output "equipotential.eps"
 
 #  set title "Equipotential Lines of the Numerical Solution"

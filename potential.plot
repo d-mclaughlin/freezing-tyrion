@@ -1,4 +1,4 @@
-set term postscript
+set term eps
 set output "potential.eps"
 
 set pm3d map

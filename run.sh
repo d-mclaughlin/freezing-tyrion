@@ -46,6 +46,6 @@ gnuplot -e "rows="$rows"; cols="$cols"" equipotential.plot
 echo "Done!"
 
 # These get really annoying when testing a lot of stuff quickly so just uncomment as necessary
-gv potential.eps 
+gv potential.png
 gv electric_field.eps
 gv equipotential.eps

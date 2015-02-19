@@ -38,7 +38,7 @@ void electric_field(Grid *grid) {
       float y = Ey_prime[row * grid->cols + col];
       
       // This is used to normalize the vector (This was Mark's idea so that the electric field would look better)
-      float norm_vector = sqrt(x*x + y*y);
+      float norm_vector = 1; //sqrt(x*x + y*y);
       
       // NOTE(Laurynas): Swapped row and col in the first two outputs --
       //  current plot seems correct.

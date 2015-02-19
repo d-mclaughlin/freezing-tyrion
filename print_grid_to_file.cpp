@@ -16,7 +16,7 @@ void print_grid_to_file(char *filename, Grid *grid, int style) {
         output << grid->get(row, col) << " ";
       } else {
         // Print the values as "x y value"
-        output << col << row << grid->get(row,col) << " ";
+        output << col << " " << row << " " << grid->get(row,col) << "\n";
       }
     }
     output << "\n";

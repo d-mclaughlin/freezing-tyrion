@@ -33,18 +33,26 @@ void cpu_calc(void) {
   CPU_percent = 100 * (work_over_time / total_over_time);
 
   //the starting time of the program
-  std::fstream time_start("time_Start.dat", std::ios_base::in);
+  std::fstream time_start("time_start.dat", std::ios_base::in);
   double x;
   time_start >> x;
   time_start.close();
 
    //end time of the program
-  std::fstream time_end("time_End.dat", std::ios_base::in);
+  std::fstream time_end("time_end.dat", std::ios_base::in);
   double z;
   time_end >> z;
   time_end.close();
 
+ //end time of the program
+  std::fstream ramy("memory.dat", std::ios_base::in);
+  double xz;
+  ramy >> xz;
+  ramy.close();
+
+
   std::cout << "Time used by the program is " << z-x << "s" << "\n";
+  std::cout << "Memory used: " << (xz*100)/(40*1024*1024) << '%'<<"\n";
   std::cout << "CPU usage: " << CPU_percent << '%' << "\n";
 }
 

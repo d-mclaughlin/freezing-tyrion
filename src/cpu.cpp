@@ -1,6 +1,5 @@
 //Written by Martynas, so if u have any questions just ask.
 #include "main.h"
-#include <iostream>
 
 // Calculate the time taken the CPU usage of the program.
  

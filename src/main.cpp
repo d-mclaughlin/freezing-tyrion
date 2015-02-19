@@ -2,18 +2,11 @@
 #include "functions.h"
 
 int main(int argc, char *argv[]) {
-  // Get the process ID number
-  system("ps ux |grep main.exe | grep -o '[0-9]*' | head -1 > misc/PID.dat");
-
   // Get the start time of the program
   system("echo $(date +%s.%N) > misc/time_start.dat");
 
   // Extract the cpu usage data a the begining of the process
   system("head -1 /proc/stat | grep -o '[0-9]*' > misc/cpu_start.dat");
-
-  // Put the value of the ram usage at the start of he pogram ino the file
-  //THIS MAY NOT BE NEEDED
-  // system("./ram.sh PID.dat >> memory.dat");
 
   const int grid_rows = atoi(argv[1]);
   const int grid_cols = atoi(argv[2]);
@@ -44,9 +37,7 @@ int main(int argc, char *argv[]) {
   for (int iter = 0; iter < 50000; iter++) {
     for (int row = 0; row < grid_rows; row++) {
       for (int col = 0; col < grid_cols; col++) {
-	
-	// If this point on the grid is not fixed, ie is_fixed == 0
-	
+	      // If this point on the grid is not fixed, ie is_fixed == 0
 	      if (!is_fixed.get(row, col)) {
 	        new_grid.evolve(&old_grid, row, col, 1.9);
 	      }
@@ -74,11 +65,11 @@ int main(int argc, char *argv[]) {
   // Extract the cpu data at the end of the program
   system("head -1 /proc/stat | grep -o '[0-9]*' > misc/cpu_end.dat");
 
- // Get the end time of the program
+  // Get the end time of the program
   system("echo $(date +%s.%N) > misc/time_end.dat");
   
- // Put the value of the ram usage at the end of the program into the file
-  system("misc/ram.sh misc/PID.dat >> misc/memory.dat");
+  // Put the value of the ram usage at the end of the program into the file
+  system("pmap $(ps | grep main.exe | grep -o '[0-9]*' | head -1) | grep -o '[0-9]*' | tail -1 > misc/memory.dat");
 
   // Calculate the percentage of CPU used by the program.
   cpu_calc();

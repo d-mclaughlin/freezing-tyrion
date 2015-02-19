@@ -1,4 +1,10 @@
-# Shell script to run everything in one shot
+####################################################################
+#       Last revised: David McLaughlin 19/2/15                     #
+#                                                                  #
+#   A shell script to compile, run, plot, and display the data for #
+# the group project in P3M Theoretical Physics, namely             #
+#
+#   
 
 # If any part of this script fails then this ensures that it exits before running
 #   the rest of the program
@@ -32,12 +38,16 @@ make
 make clean
 cd ..
 
+# find the memory usage of the shell script, which includes the
+# memory usage of the main.exe file
+
+
 echo "Running..."
 res/main.exe "$rows" "$cols" "$input_file"
 echo "Done!"
 
 # Clean up the directory of all the dat files the program makes
-rm -f misc/cpu_start.dat misc/cpu_end.dat misc/time_start.dat misc/time_end.dat # misc/memory.dat misc/PID.dat
+rm -f misc/cpu_start.dat misc/cpu_end.dat misc/time_start.dat misc/time_end.dat misc/memory.dat
 
 echo "Plotting..."
 gnuplot -e "rows="$rows"; cols="$cols"" misc/potential.plot

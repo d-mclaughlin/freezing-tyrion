@@ -70,16 +70,16 @@ int main(int argc, char *argv[]) {
   // Find the electric field and produce an appropriate data file
   electric_field(&new_grid);
 
-  //Similarly as before this is used to extract the cpu data at the end of the program
+  // Extract the cpu data at the end of the program
   system("head -1 /proc/stat | grep -o '[0-9]*' > cpu_end.dat");
 
- //This gets the end time of the program
+ // Get the end time of the program
   system("echo $(date +%s.%N) > time_end.dat");
   
- //Putting the value of the ram usage at the end of he pogram ino the file
+ // Put the value of the ram usage at the end of the program ino the file
   system("./ram.sh PID.dat >> memory.dat");
 
-  //This calculates the pecentage of CPU used by the program.
+  // Calculate the percentage of CPU used by the program.
   cpu_calc();
   
   return 0;

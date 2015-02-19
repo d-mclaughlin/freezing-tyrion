@@ -38,10 +38,6 @@ make
 make clean
 cd ..
 
-# find the memory usage of the shell script, which includes the
-# memory usage of the main.exe file
-
-
 echo "Running..."
 res/main.exe "$rows" "$cols" "$input_file"
 echo "Done!"
@@ -61,6 +57,6 @@ echo "Done!"
 rm -f misc/potential_matrix.dat misc/electric_field.dat misc/equipotential.dat
 
 # These get really annoying when testing a lot of stuff quickly so just uncomment as necessary
-#gv res/potential.eps
-#gv res/electric_field.eps
-#gv res/equipotential.eps
+gv res/potential.eps
+gv res/electric_field.eps
+gv res/equipotential.eps

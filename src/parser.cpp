@@ -183,27 +183,3 @@ void parse(char *filename, Grid *is_fixed, Grid *grid) {
     }
   }
 }
-
-/*
-int main() {
-  int grid_rows = 200;
-  int grid_cols = 200;
-
-  Grid grid(grid_rows, grid_cols);
-  Grid is_fixed(grid_rows, grid_cols);
-
-  parse("systemA.txt", &is_fixed, &grid, grid_rows, grid_cols);
-
-  std::ofstream output ("potential_matrix.dat");
-  std::ofstream fixedoutput ("fixed.dat");
-
-  for (int row = 0; row < grid_rows; row++) {
-    for (int col = 0; col < grid_cols; col++) {
-      output << grid.voltages[row * grid_cols + col] << " ";
-      fixedoutput << is_fixed.voltages[row * grid_cols + col] << " ";
-    }
-    output << "\n";
-    fixedoutput << "\n";
-  }
-}
-*/

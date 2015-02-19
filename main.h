@@ -8,6 +8,8 @@
 #include <vector>
 
 // Grid is a basic class containing a grid of points
+// We should probably take out the function definitions in here and only have
+//  declarations. A header file is no place for lengthy defintions.
 class Grid {
 public:
   std::vector<float> voltages;  
@@ -95,10 +97,10 @@ public:
 
   // This is a prime example of something that should be an overloaded = operator
   // Wouldn't be any job to do but I cba right now.
-  void operator=(Grid *rhs) {
+  void operator=(Grid rhs) {
     for (int row = 0; row < rows; row++) {
       for (int col = 0; col < cols; col++) {
-	      this->set(row, col, rhs->get(row,col));
+	      this->set(row, col, rhs.get(row,col));
       }
     }
   }

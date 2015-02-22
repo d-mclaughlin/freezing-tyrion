@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include "EasyBMP.h"
 
 // Grid is a basic class containing a grid of points
 // We should probably take out the function definitions in here and only have

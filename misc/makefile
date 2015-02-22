@@ -1,6 +1,6 @@
 CC=g++
-objs=parser.o electric_field.o cpu.o error.o print_grid_to_file.o main.o
-headers=main.h functions.h
+objs=parser.o electric_field.o cpu.o error.o print_grid_to_file.o main.o EasyBMP.o
+headers=main.h functions.h EasyBMP.h
 flags=-Wall -g
 
 source_folder=../src

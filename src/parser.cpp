@@ -177,9 +177,53 @@ void parse(char *filename, Grid *is_fixed, Grid *grid) {
         }
       }
 
-    } else if (!shape_type.compare("#")) {
+    } else if (!shape_type.compare("bitmap")) {
+      std::string temporary;
+      linestream >> temporary;
+
+      // convert string to const char*
+      const char *bmp_file = (char*)temporary.c_str();
+
+      BMP inFile;
+      inFile.ReadFromFile(bmp_file);
+
+      // In this version I am assuming that the user knows the dimensios of the bmp file. It is not impossible -- I am using program which shows the dimensions, i.e. pixels in x and y directions
+      int grid_cols = grid->cols;
+      int grid_rows = grid->rows;
+
+      // Currently there are three colours, I am setting their values here. Could be improved so that the user is able to set these values
+      float red_voltage = 100.00f;
+      float blue_voltage = -100.00f;
+      float green_voltage = 0.00f;
+
+      RGBApixel temp;
+      for (int col=0; col < grid_cols; col++) {
+	for (int row=0; row < grid_rows; row++) {
+	  temp = inFile.GetPixel(col,row);
+	  // RED
+	  if ((int) temp.Red != 0 && (int) temp.Green == 0 && (int) temp.Blue == 0) {
+	    is_fixed -> set(row, col, 1);
+	    grid->set(row,col, red_voltage);
+	  }
+	  // BLUE
+	  else if ((int) temp.Red == 0 && (int) temp.Green == 0 && (int) temp.Blue != 0) {
+	    is_fixed -> set(row, col, 1);
+	    grid -> set(row, col, blue_voltage);
+	  }
+	  // GREEN
+	  else if ((int) temp.Red == 0 && (int) temp.Green != 0 && (int) temp.Blue == 0) {
+	    is_fixed -> set(row, col, 1);
+	    grid -> set(row, col, green_voltage);
+	  }
+	  // OTHER COLOURS TREAT AS THE SAME
+	  else {
+	    grid -> set(row, col, 0);
+	  }
+	}
+      }
+    }
+    else if (!shape_type.compare("#")) {
       // This is just for comments; it's not actually necessary but whatever
-      continue;
     }
   }
 }

@@ -29,7 +29,7 @@ void electric_field(Grid *grid) {
   }
   
   // Output to a file
-  std::ofstream output ("electric_field.dat");
+  std::ofstream output ("misc/electric_field.dat");
 
   // Outputing only one-third of all the array elements to produce a better graphs -- hence row += 3 and col += 3
   for (int row = 0; row < grid->rows; row += 3) {

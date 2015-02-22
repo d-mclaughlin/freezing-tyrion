@@ -14,7 +14,7 @@
 #############################################################################
 
 set term postscript
-set output "equipotential.eps"
+set output "res/equipotential.eps"
 
 set title "Equipotential Lines of the Numerical Solution"
 
@@ -56,4 +56,4 @@ set cntrparam order 4
 #set cntrparam levels incremental -2.5,0.2,26
 set cntrparam level auto 26
 
-splot "potential_matrix.dat" matrix with image notitle, "equipotential.dat" with lines lt 1 lw 2 title "Potential"
+splot "misc/potential_matrix.dat" matrix with image notitle, "misc/equipotential.dat" with lines lt 1 lw 2 title "Potential"

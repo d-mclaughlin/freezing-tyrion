@@ -1,5 +1,5 @@
 set term postscript
-set output "electric_field.eps"
+set output "res/electric_field.eps"
 
 set title "Electric Field of The Numerical Solution"
 
@@ -12,4 +12,4 @@ unset ytics
 
 set style arrow 1
 set key off
-plot "electric_field.dat" using 1:2:3:4 with vectors lt 1
+plot "misc/electric_field.dat" using 1:2:3:4 with vectors lt 1

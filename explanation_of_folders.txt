@@ -1,0 +1,11 @@
+You'll notice the whole thing has been mushed into 3 folders: src, res, and misc
+
+src is for source files -- basically any .cpp and .h files that contribute to the final program
+
+res is for resource files -- anything that we want to show off at the end of the program, so .eps files and that's about it
+
+misc is for anything that doesn't fit into this category -- makefiles, .sh, .dat files, temporary files, .plot files, ...
+
+The main directory still has stuff in it. This is Mark's plotting code and data files, which I'm not so sure what to do with. Our good friend run.sh is still in the main directory too. It knows what to do and can still work with this new folder structure.
+
+I had to change a few .cpp files (main.cpp, electric_field.cpp, cpu.cpp... anything with a filename in it somewhere) to reflect this new system so be mindful of that.

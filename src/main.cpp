@@ -51,9 +51,10 @@ int main(int argc, char *argv[]) {
       std::cout << "Accuracy achieved after " << iter << "th iteration\n";
       std::cout << "Absolute error is " << error << std::endl;
       break;
-    } else if (iter == max_iter) {
+    } else if (iter == (max_iter - 1)) {
       std::cout << "Accuracy achieved after " << iter << "th iteration\n";
       std::cout << "Absolute error is " << error << std::endl;
+      break;
     } else {
       old_grid = new_grid;
     }

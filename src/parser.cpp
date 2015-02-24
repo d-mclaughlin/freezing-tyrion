@@ -33,7 +33,17 @@
 
     All coordinates are based on the grid, from the top left, 
     so (1, 1) would be the far bottom right.
-    (0, 1) is the bottom left. 
+    (0, 1) is the bottom left.
+    
+    BITMAP
+       bitmap file Vr Vg Vb
+
+       file - the path to the text file which contains all the
+              information; the path has to be taken from the
+              directory where the run.sh file is.
+       Vr - the potential referring to the RED COLOUR
+       Vg - the potential referring to the GREEN COLOUR
+       Vb - the potential referring to the BLUE COLOUR 
 ****************************************************************************/
 
 #include <string>
@@ -185,43 +195,53 @@ void parse(char *filename, Grid *is_fixed, Grid *grid) {
       const char *bmp_file = (char*)temporary.c_str();
 
       BMP inFile;
-      inFile.ReadFromFile("../misc/test.bmp");
+      if (inFile.ReadFromFile(bmp_file))
+	{
 
-      // In this version I am assuming that the user knows the dimensios of the bmp file. It is not impossible -- I am using program which shows the dimensions, i.e. pixels in x and y directions
-      //int grid_cols = grid->cols;
-      //int grid_rows = grid->rows;
-      int grid_cols = 200;
-      int grid_rows = 200;
+	  // In this version I am assuming that the user knows the dimensios of the bmp file. It is not impossible -- I am using program which shows the dimensions, i.e. pixels in x and y directions
 
-      // Currently there are three colours, I am setting their values here. Could be improved so that the user is able to set these values
-      float red_voltage = 100.00f;
-      float blue_voltage = -100.00f;
-      float green_voltage = 0.00f;
+	  int grid_cols = inFile.TellWidth();
+	  int grid_rows = inFile.TellHeight();
+	  
+	  // Currently there are three colours. Each refers to a different voltage defined by a user in the text file which is read by the parse funtion
+	  float red_voltage;
+	  float blue_voltage;
+	  float green_voltage;
 
-      RGBApixel temp;
-      for (int col=0; col < grid_cols; col++) {
-	for (int row=0; row < grid_rows; row++) {
-	  temp = inFile.GetPixel(col,row);
-	  // RED
-	  if ((int) temp.Red != 0 && (int) temp.Green == 0 && (int) temp.Blue == 0) {
-	    is_fixed -> set(row, col, 1);
-	    grid->set(row,col, red_voltage);
-	  }
-	  // BLUE
-	  else if ((int) temp.Red == 0 && (int) temp.Green == 0 && (int) temp.Blue != 0) {
-	    is_fixed -> set(row, col, 1);
-	    grid -> set(row, col, blue_voltage);
-	  }
-	  // GREEN
-	  else if ((int) temp.Red == 0 && (int) temp.Green != 0 && (int) temp.Blue == 0) {
-	    is_fixed -> set(row, col, 1);
-	    grid -> set(row, col, green_voltage);
-	  }
-	  // OTHER COLOURS TREAT AS THE SAME
-	  else {
-	    grid -> set(row, col, 0);
+	  linestream >> red_voltage;
+	  linestream >> green_voltage;
+	  linestream >> blue_voltage;
+
+	  // Setting the fixed points, boundaries and initializing the grid with potentials that are defined in the text file	  
+	  RGBApixel temp;
+	  for (int col=0; col < grid_cols; col++) {
+	    for (int row=0; row < grid_rows; row++) {
+	      temp = inFile.GetPixel(col,row);
+	      // RED
+	      if ((int) temp.Red != 0 && (int) temp.Green == 0 && (int) temp.Blue == 0) {
+		is_fixed -> set(row, col, 1);
+		grid->set(row,col, red_voltage);
+	      }
+	      // BLUE
+	      else if ((int) temp.Red == 0 && (int) temp.Green == 0 && (int) temp.Blue != 0) {
+		is_fixed -> set(row, col, 1);
+		grid -> set(row, col, blue_voltage);
+	      }
+	      // GREEN
+	      else if ((int) temp.Red == 0 && (int) temp.Green != 0 && (int) temp.Blue == 0) {
+		is_fixed -> set(row, col, 1);
+		grid -> set(row, col, green_voltage);
+	      }
+	      // OTHER COLOURS TREAT AS THE SAME
+	      else {
+		grid -> set(row, col, 0);
+	      }
+	    }
 	  }
 	}
+      else {
+	std::cout << "Error openning BMP file\n";
+	exit(8);
       }
     }
     else if (!shape_type.compare("#")) {

@@ -12,25 +12,21 @@ int main(int argc, char *argv[]) {
   const int grid_cols = atoi(argv[2]);
   
   char *initial_condition_file = argv[3];
-  std::cout << "line 15\n";
   // Initialise three grids:
   // Old grid is the previous iteration of our rid
   // New grid is the next iteration of our grid
   // Is Fixed is the grid deciding whether a point is fixed to a certain voltage
   
   Grid old_grid(grid_rows, grid_cols);
-  std::cout << "line 22\n";
   Grid new_grid(grid_rows, grid_cols);
-  std::cout << "line 24\n";
   Grid is_fixed(grid_rows, grid_cols);
   
   // Find which points are fixed and set them to 1 in the fixed grid,
   // and get the inital values of those fixed points and put them in the
   // old_grid.
-  std::cout << "line 30\n";
   parse(initial_condition_file, &is_fixed, &old_grid);
   new_grid = old_grid;
-  std::cout << "line 33\n";
+
   /*******************************************
    * Successive over/under relaxation method *
    *******************************************/

@@ -17,6 +17,11 @@ if [ "$#" -eq 1 ]; then
   rows=200
   cols=200
   
+elif [ "$#" -eq 2 ]; then
+  input_file="misc/systemA.txt"
+  rows="$1"
+  cols="$2"
+  
 elif [ "$#" -eq 3 ]; then
   # If you provide 3 arguments then you can change the size of the grid and the name
   #   of the file.
@@ -54,7 +59,7 @@ gnuplot -e "rows="$rows"; cols="$cols"" misc/equipotential.plot
 echo "Done!"
 
 # Remove those dat files we no longer need
-rm -f misc/potential_matrix.dat misc/electric_field.dat misc/equipotential.dat
+#rm -f misc/potential_matrix.dat misc/electric_field.dat misc/equipotential.dat
 
 # These get really annoying when testing a lot of stuff quickly so just uncomment as necessary
 gv res/potential.eps

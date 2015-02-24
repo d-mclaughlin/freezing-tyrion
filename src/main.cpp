@@ -34,7 +34,9 @@ int main(int argc, char *argv[]) {
    *******************************************/
   
   float error_tol = pow(10, -3);
-  for (int iter = 0; iter < 50000; iter++) {
+  int max_iter = 50000;
+  
+  for (int iter = 0; iter < max_iter; iter++) {
     for (int row = 0; row < grid_rows; row++) {
       for (int col = 0; col < grid_cols; col++) {
 	      // If this point on the grid is not fixed, ie is_fixed == 0
@@ -51,7 +53,9 @@ int main(int argc, char *argv[]) {
       break;
     } else {
       old_grid = new_grid;
-    }
+    } else if (iter == max_iter) {
+      std::cout << "Accuracy achieved after " << iter << "th iteration\n";
+      std::cout << "Absolute error is " << error << std::endl;
   }
 
   print_grid_to_file("misc/potential_matrix.dat", &new_grid, 0);

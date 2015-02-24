@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
    *******************************************/
   
   float error_tol = pow(10, -3);
-  int max_iter = 50000;
+  int max_iter = 512;
   
   for (int iter = 0; iter < max_iter; iter++) {
     for (int row = 0; row < grid_rows; row++) {

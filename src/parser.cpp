@@ -185,11 +185,13 @@ void parse(char *filename, Grid *is_fixed, Grid *grid) {
       const char *bmp_file = (char*)temporary.c_str();
 
       BMP inFile;
-      inFile.ReadFromFile(bmp_file);
+      inFile.ReadFromFile("../misc/test.bmp");
 
       // In this version I am assuming that the user knows the dimensios of the bmp file. It is not impossible -- I am using program which shows the dimensions, i.e. pixels in x and y directions
-      int grid_cols = grid->cols;
-      int grid_rows = grid->rows;
+      //int grid_cols = grid->cols;
+      //int grid_rows = grid->rows;
+      int grid_cols = 200;
+      int grid_rows = 200;
 
       // Currently there are three colours, I am setting their values here. Could be improved so that the user is able to set these values
       float red_voltage = 100.00f;

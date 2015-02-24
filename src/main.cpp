@@ -51,11 +51,12 @@ int main(int argc, char *argv[]) {
       std::cout << "Accuracy achieved after " << iter << "th iteration\n";
       std::cout << "Absolute error is " << error << std::endl;
       break;
-    } else {
-      old_grid = new_grid;
     } else if (iter == max_iter) {
       std::cout << "Accuracy achieved after " << iter << "th iteration\n";
       std::cout << "Absolute error is " << error << std::endl;
+    } else {
+      old_grid = new_grid;
+    }
   }
 
   print_grid_to_file("misc/potential_matrix.dat", &new_grid, 0);

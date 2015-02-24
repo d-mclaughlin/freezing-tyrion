@@ -8,8 +8,8 @@ int main(int argc, char *argv[]) {
   // Extract the cpu usage data a the begining of the process
   system("head -1 /proc/stat | grep -o '[0-9]*' > misc/cpu_start.dat");
 
-  const int grid_rows = atoi(argv[1]);
-  const int grid_cols = atoi(argv[2]);
+   int grid_rows = atoi(argv[1]);
+   int grid_cols = atoi(argv[2]);
   
   char *initial_condition_file = argv[3];
   // Initialise three grids:
@@ -25,6 +25,7 @@ int main(int argc, char *argv[]) {
   // and get the inital values of those fixed points and put them in the
   // old_grid.
   parse(initial_condition_file, &is_fixed, &old_grid);
+
   new_grid = old_grid;
 
   /*******************************************

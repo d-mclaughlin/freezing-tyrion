@@ -32,7 +32,8 @@ int main(int argc, char *argv[]) {
    *******************************************/
   
   float error_tol = pow(10, -3);
-  for (int iter = 0; iter < 50000; iter++) {
+  int max_iter = 512;
+  for (int iter = 0; iter < max_iter; iter++) {
     for (int row = 0; row < grid_rows; row++) {
       for (int col = 0; col < grid_cols; col++) {
 	      // If this point on the grid is not fixed, ie is_fixed == 0
@@ -47,7 +48,13 @@ int main(int argc, char *argv[]) {
       std::cout << "Accuracy achieved after " << iter << "th iteration\n";
       std::cout << "Absolute error is " << error << std::endl;
       break;
-    } else {
+    } 
+    else if (iter == (max_iter - 1)) {
+      std::cout << "Accuracy achieved after " << iter << "th iteration\n";
+      std::cout << "Absolute error is " << error << std::endl;
+      break;
+    }
+    else {
       old_grid = new_grid;
     }
   }

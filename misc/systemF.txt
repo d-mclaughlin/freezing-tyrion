@@ -2,8 +2,8 @@
 plate h 0 0 1 -300
 
 # Top middle plates @ -V2
-plate h 0   0.7 0.4 -200
-plate h 0.6 0.7 0.4 -200
+plate h 0   0.7 0.4 -300
+plate h 0.6 0.7 0.4 -300
 
 # Bottom middle plates @ -V1
 plate h 0   0.8 0.4 -100

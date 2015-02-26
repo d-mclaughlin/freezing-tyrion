@@ -40,12 +40,14 @@ else
   cols=200
 fi
 
+echo -n "Building..."
 cd misc
 # I can't seem to get this line working with makefile so it's here for now
 g++ -c ../src/parser.cpp -std=c++0x -Wall -g
 make
 make clean
 cd ..
+echo "Done!"
 
 echo "Running..."
 res/main.exe "$rows" "$cols" "$input_file"
@@ -54,7 +56,7 @@ echo "Done!"
 # Clean up the directory of all the dat files the program makes
 rm -f misc/cpu_start.dat misc/cpu_end.dat misc/time_start.dat misc/time_end.dat misc/memory.dat
 
-echo "Plotting..."
+echo -n "Plotting..."
 gnuplot -e "rows="$rows"; cols="$cols"" misc/potential.plot
 
 gnuplot -e "rows="$rows"; cols="$cols"" misc/electric_field.plot

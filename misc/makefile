@@ -7,11 +7,11 @@ source_folder=../src
 output_folder=../res
 
 $(output_folder)/main.exe: $(objs)
-	$(CC) $^ -o $@ $(flags)
+	@ $(CC) $^ -o $@ $(flags)
 
 %.o: $(source_folder)/%.cpp  
-	$(CC) -c $< $(flags)
+	@ $(CC) -c $< $(flags)
 
 .PHONY: clean
 clean:
-	rm -f *.o
+	@ rm -f *.o

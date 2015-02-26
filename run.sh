@@ -66,6 +66,6 @@ echo "Done!"
 rm -f misc/potential_matrix.dat misc/electric_field.dat misc/equipotential.dat
 
 # These get really annoying when testing a lot of stuff quickly so just uncomment as necessary
-gv res/potential.eps
-#gv res/electric_field.eps
-#gv res/equipotential.eps
+evince -w res/potential.eps
+evince -w res/electric_field.eps
+evince -w res/equipotential.eps

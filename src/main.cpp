@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
    *******************************************/
   
   float error_tol = pow(10, -3);
-  int max_iter = 512;
+  int max_iter = 10000;
   
   for (int iter = 0; iter < max_iter; iter++) {
     for (int row = 0; row < grid_rows; row++) {
@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
       std::cout << "Absolute error is " << error << std::endl;
       break;
     } else if (iter == (max_iter - 1)) {
-      std::cout << "Accuracy achieved after " << iter << "th iteration\n";
+      std::cout << "Accuracy achieved prematurely after " << iter << "th iteration\n";
       std::cout << "Absolute error is " << error << std::endl;
       break;
     } else {

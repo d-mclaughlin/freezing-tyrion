@@ -8,7 +8,7 @@ void electric_field(Grid *grid);
 
 void cpu_calc(void);
 
-void print_grid_to_file(char *filename, Grid *grid, int style);
+void print_grid_to_file(const char *filename, Grid *grid, int style);
 
 int error_check(Grid *old_grid, Grid *new_grid, int error_bound);
                   

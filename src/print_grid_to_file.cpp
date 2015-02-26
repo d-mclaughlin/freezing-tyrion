@@ -2,7 +2,7 @@
 
 // Print a matrix into a file.
 // Style is 0 if you don't want the coordinates as well, and 1 if you do
-void print_grid_to_file(char *filename, Grid *grid, int style) {
+void print_grid_to_file(const char *filename, Grid *grid, int style) {
   std::ofstream output (filename);
   if (!output.is_open()) {
     std::cout << "Error opening the data file \"" << filename << "\" \n";

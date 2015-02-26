@@ -106,13 +106,13 @@ void parse(char *filename, Grid *is_fixed, Grid *grid) {
       int centre_row = floor(coords[1] * grid->rows);
       int centre_col = floor(coords[0] * grid->cols);
       // NOTE(david): This line is the reason we can't use rectangular grids.
-      int radius = coords[2] * grid->rows;
+      int radius = coords[2] * grid->cols;
 
       for (int row = (centre_row - radius); row < (centre_row + radius); row++) {
         for (int col = (centre_col - radius); col < (centre_col + radius); col++) {
+          // If the point is inside the circle
           if ((row - centre_row) * (row - centre_row) +
               (col - centre_col) * (col - centre_col) <= radius * radius) {
-            
             // It's a fixed value
             is_fixed->set(row, col, 1);
             // And that value is 0. We could change this so it's anything

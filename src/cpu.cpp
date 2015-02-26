@@ -50,7 +50,7 @@ void cpu_calc(void) {
   ramy.close();
 
   std::cout << "Time used by the program is " << z-x << "s" << "\n";
-  std::cout << "Memory used: " << (xz*100)/(40*1024*1024) << '%' << "\n";
+  std::cout << "Memory used: " << (xz*100)/(4*1024*1024) << '%' << "\n";
   std::cout << "CPU usage: " << CPU_percent << '%' << "\n";
 }
 

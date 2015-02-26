@@ -1,10 +1,12 @@
-####################################################################
-#       Last revised: David McLaughlin 19/2/15                     #
-#                                                                  #
-#   A shell script to compile, run, plot, and display the data for #
-# the group project in P3M Theoretical Physics, namely             #
-#
-#   
+#####################################################################
+#       Last revised: David McLaughlin 19/2/15                      #
+#                                                                   #
+#   A shell script to compile, run, plot, and display the data for  #
+# the group project in P3M Theoretical Physics                      #
+#                                                                   #
+#   Inputs are a filename for initial conditions, a number of rows, #
+# and a number of columns for the grid.                             #
+#####################################################################
 
 # If any part of this script fails then this ensures that it exits before running
 #   the rest of the program
@@ -18,6 +20,8 @@ if [ "$#" -eq 1 ]; then
   cols=200
   
 elif [ "$#" -eq 2 ]; then
+  # If you give 2 arguments then they're the grid sizes and the default
+  # file (system A) is chosen
   input_file="misc/systemA.txt"
   rows="$1"
   cols="$2"
@@ -59,9 +63,9 @@ gnuplot -e "rows="$rows"; cols="$cols"" misc/equipotential.plot
 echo "Done!"
 
 # Remove those dat files we no longer need
-#rm -f misc/potential_matrix.dat misc/electric_field.dat misc/equipotential.dat
+rm -f misc/potential_matrix.dat misc/electric_field.dat misc/equipotential.dat
 
 # These get really annoying when testing a lot of stuff quickly so just uncomment as necessary
 gv res/potential.eps
-gv res/electric_field.eps
-gv res/equipotential.eps
+#gv res/electric_field.eps
+#gv res/equipotential.eps

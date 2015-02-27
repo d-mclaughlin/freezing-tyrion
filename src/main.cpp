@@ -34,13 +34,17 @@ int main(int argc, char *argv[]) {
   
   float error_tol = pow(10, -3);
   int max_iter = 512;
+  // t is used in calculating the relaxation factor. The relaxation factor is truncated to 1 decimal place in order to make sure that it does not get too big and the solution does not diverge
+  float t = cos(3.14159/grid_cols) + cos(3.14159/grid_rows);
+  float relaxation = floorf((((8 - sqrt(64 - 16*t*t)) / (t*t)) * 10.0f)) / 10.0f;
+  
   for (int iter = 0; iter < max_iter; iter++) {
     for (int row = 0; row < grid_rows; row++) {
       for (int col = 0; col < grid_cols; col++) {
-	      // If this point on the grid is not fixed, ie is_fixed == 0
-	      if (!is_fixed.get(row, col)) {
-	        new_grid.evolve(&old_grid, row, col, 1.9);
-	      }
+	// If this point on the grid is not fixed, ie is_fixed == 0
+	if (!is_fixed.get(row, col)) {
+	  new_grid.evolve(&old_grid, row, col, relaxation);
+	}
       }
     }
     

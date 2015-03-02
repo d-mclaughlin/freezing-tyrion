@@ -6,7 +6,7 @@ Plot output to see erorr against number of iterations.
 
 #include "main.h"
 
-void print_error_to_file(char *filename, std::vector<double> absError){
+void print_error_to_file(const char *filename, std::vector<double> absError){
   std::ofstream output (filename);
   //Number of elements in vector.
   int vector_size=absError.size();

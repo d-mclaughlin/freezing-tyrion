@@ -19,7 +19,7 @@ void numerical_analytic_comparison(Grid *num) {
   std::ifstream analytical;
 
   //Assumes numerical solution is square matrix of length row_size
-  switch(row_size) {
+  switch (row_size) {
     case 50:
       analytical.open("misc/CylinderPotential50.txt");
       break;
@@ -45,7 +45,7 @@ void numerical_analytic_comparison(Grid *num) {
   // Compare how many points form the circle in the numerical and analytical data.
   // Interestingly, numerical seems to give larger area for the same radius.
 
-  //Inputing analytical result data points.
+  // Input analytical result data points.
   for (int row = 0; row < row_size; row++) {
     for (int col = 0; col < col_size; col++) {
       double anaElement;
@@ -58,7 +58,7 @@ void numerical_analytic_comparison(Grid *num) {
   }
   
   // Output is by row. Not column like input files.
-  // One for absolute differe, other for relative error.
+  // One for absolute difference, other for relative error.
   std::ofstream difference, relative;
   difference.open("misc/difference.dat");
   relative.open("misc/relative_error.dat");
@@ -79,13 +79,4 @@ void numerical_analytic_comparison(Grid *num) {
     relative << "\n";
     difference << "\n";
   }
-  
-  double out = 0;
-  for(int i = 0; i < row_size; i++) {
-    for(int j = 0; j < col_size; j++) {
-      out += dif[i][j];
-    }
-  }
-
-  std::cout << out / (row_size * col_size) << "\n";
 }

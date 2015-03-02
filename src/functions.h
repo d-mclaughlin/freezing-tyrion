@@ -14,7 +14,7 @@ int error_check(Grid *old_grid, Grid *new_grid, int error_bound);
                   
 void equate_matrix(Grid *old_grid, Grid *new_grid);
 
-void print_error_to_file(char *filename, std::vector<double> absError);
+void print_error_to_file(const char *filename, std::vector<double> absError);
 
 void numerical_analytic_comparison(Grid *num);
 #endif

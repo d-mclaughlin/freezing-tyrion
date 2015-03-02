@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
    * Successive over/under relaxation method *
    *******************************************/
   
-  float error_tol = pow(10, -3);
+  float error_tol = pow(10, -6);
   int max_iter = 10000;
   
   for (int iter = 0; iter < max_iter; iter++) {
@@ -51,9 +51,8 @@ int main(int argc, char *argv[]) {
 
     double error = new_grid.absolute_error(&old_grid);
 
-    //Add error to vector
+    // Add error to vector
     absError.push_back(error);
-    //
 
     if (error <= error_tol) {
       std::cout << "Accuracy achieved after " << iter << "th iteration\n";
@@ -91,12 +90,6 @@ int main(int argc, char *argv[]) {
   print_error_to_file("misc/error_convergence.dat",absError);
 
   numerical_analytic_comparison(&new_grid);
-  /*
-  std::cout<<"INCOMING!\n";
-  for(int i=0;i<100;i++){
-    std::cout<<new_grid.get(80,i)<<" ";
-  }
-  */
 
   return 0;
 }

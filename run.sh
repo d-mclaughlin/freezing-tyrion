@@ -72,7 +72,7 @@ gnuplot -e "rows="$rows"; cols="$cols"" misc/relative_error.plot
 echo "Done!"
 
 # Remove those dat files we no longer need
-rm -f misc/potential_matrix.dat misc/electric_field.dat misc/equipotential.dat misc/difference.dat misc/error_convergence.dat misc/relative_error.dat
+rm -f misc/potential_matrix.dat misc/electric_field.dat misc/equipotential.dat #misc/difference.dat misc/error_convergence.dat misc/relative_error.dat
 
 # These get really annoying when testing a lot of stuff quickly so just uncomment as necessary
 #evince -w res/potential.eps

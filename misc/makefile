@@ -1,5 +1,5 @@
 CC=g++
-objs=cpu.o print_grid_to_file.o electric_field.o error.o parser.o main.o
+objs=parser.o electric_field.o cpu.o error.o print_grid_to_file.o main.o print_error_to_file.o numerical_analytic_comparison.o
 headers=main.h functions.h
 flags=-Wall -g -std=c++0x
 

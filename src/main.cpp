@@ -29,6 +29,9 @@ int main(int argc, char *argv[]) {
   parse(initial_condition_file, &is_fixed, &old_grid);
   new_grid = old_grid;
   
+  //Absolute error at each iteration
+  std::vector<double> absError;
+
   /*******************************************
    * Successive over/under relaxation method *
    *******************************************/
@@ -45,8 +48,13 @@ int main(int argc, char *argv[]) {
 	      }
       }
     }
-    
-    float error = new_grid.absolute_error(&old_grid);
+
+    double error = new_grid.absolute_error(&old_grid);
+
+    //Add error to vector
+    absError.push_back(error);
+    //
+
     if (error <= error_tol) {
       std::cout << "Accuracy achieved after " << iter << "th iteration\n";
       std::cout << "Absolute error is " << error << std::endl;
@@ -79,6 +87,16 @@ int main(int argc, char *argv[]) {
 
   // Calculate the percentage of CPU used by the program.
   cpu_calc();
+
+  print_error_to_file("misc/error_convergence.dat",absError);
+
+  numerical_analytic_comparison(&new_grid);
+  /*
+  std::cout<<"INCOMING!\n";
+  for(int i=0;i<100;i++){
+    std::cout<<new_grid.get(80,i)<<" ";
+  }
+  */
 
   return 0;
 }

@@ -12,7 +12,7 @@
 //  declarations. A header file is no place for lengthy defintions.
 class Grid {
 public:
-  std::vector<float> voltages;  
+  std::vector<double> voltages;  
   int rows;
   int cols;
   float spacing;
@@ -37,12 +37,12 @@ public:
   ~Grid() {;}
 
   // Get the value of the grid at a given point
-  float get(int row, int col) {
+  double get(int row, int col) {
     return this->voltages[row * cols + col];
   }
   
   // Set the value of the grid at a given point to a given value
-  void set(int row, int col, float value) {
+  void set(int row, int col, double value) {
     this->voltages[row * cols + col] = value;
   }
   
@@ -55,7 +55,7 @@ public:
   
   
   void evolve(Grid *old, int row, int col, float relaxation) {
-    float value;
+    double value;
     
     //Top left and top right corner
     if ((row == 0 && col == 0) || (row == 0 && col == (cols-1))) {
@@ -105,8 +105,8 @@ public:
     }
   }
   
-  float absolute_error(Grid *old) {
-    float difference, max = 0.0f;
+  double absolute_error(Grid *old) {
+    double difference, max = 0.0f;
     
     for (int row = 0; row < rows; row++) {
       for (int col = 0; col < cols; col++) {

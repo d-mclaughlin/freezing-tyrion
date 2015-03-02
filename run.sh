@@ -43,6 +43,8 @@ fi
 echo -n "Building..."
 cd misc
 # I can't seem to get this line working with makefile so it's here for now
+# The 'proper' way to fix it would be to avoid using string streams in parser
+#   and using fscanf() instead. But I really can't be bothered doing that ever
 g++ -c ../src/parser.cpp -std=c++0x -Wall -g
 make
 make clean
@@ -69,5 +71,5 @@ rm -f misc/potential_matrix.dat misc/electric_field.dat misc/equipotential.dat
 
 # These get really annoying when testing a lot of stuff quickly so just uncomment as necessary
 evince -w res/potential.eps
-evince -w res/electric_field.eps
-evince -w res/equipotential.eps
+#evince -w res/electric_field.eps
+#evince -w res/equipotential.eps

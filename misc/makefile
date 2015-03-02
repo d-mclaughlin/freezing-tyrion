@@ -1,7 +1,7 @@
 CC=g++
-objs=parser.o electric_field.o cpu.o error.o print_grid_to_file.o main.o
+objs=cpu.o print_grid_to_file.o electric_field.o error.o parser.o main.o
 headers=main.h functions.h
-flags=-Wall -g
+flags=-Wall -g -std=c++0x
 
 source_folder=../src
 output_folder=../res

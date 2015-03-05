@@ -3,9 +3,9 @@ set output "res/potential.eps"
 
 set pm3d map
 set size square
-set xrange[0:rows]
+set xrange[0:cols]
 # The graph is plotted upside down, so reverse the y-axis
-set yrange[0:cols] reverse
+set yrange[0:rows] reverse
 
 unset xtics
 unset ytics
